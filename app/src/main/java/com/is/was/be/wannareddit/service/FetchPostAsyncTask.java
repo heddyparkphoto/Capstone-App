@@ -41,10 +41,16 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
     @Override
     protected ArrayList<MainPost> doInBackground(String... args) {
 
-        StringBuilder urlStringBuilder = new StringBuilder();
-//        urlStringBuilder.append("https://www.reddit.com/r/todayilearned/hot.json?limit=5");
-        urlStringBuilder.append("https://www.reddit.com/r/todayilearned/hot.json?limit=25");
+        String subreddit = args[0];
+        String category = args[1];
+        final String SUBREDDIT_BASE_STRING = "https://www.reddit.com/r/";
+        final String ENDING_BASE_STRING = ".json?limit=25";
 
+        StringBuilder urlStringBuilder = new StringBuilder(SUBREDDIT_BASE_STRING);
+//        urlStringBuilder.append("https://www.reddit.com/r/todayilearned/hot.json?limit=25");
+        urlStringBuilder.append(subreddit).append("/").append(category).append(ENDING_BASE_STRING);
+
+        Log.d(TAG, "VERIFY: "+urlStringBuilder.toString());
 
         String returnStr = null;
         String getResponse;

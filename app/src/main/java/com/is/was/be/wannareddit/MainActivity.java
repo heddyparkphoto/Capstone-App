@@ -199,6 +199,9 @@ public class MainActivity extends AppCompatActivity
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        // For now, afford 5 categories that are similar to each other and more unique to the 'reddit'
+        String[] fiveCategories = {"HOT", "NEW", "RISING", "CONTROVERSIAL", "TOP"};
+
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -206,35 +209,35 @@ public class MainActivity extends AppCompatActivity
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return MainPagerFragment.newInstance(position + 1, "HOT");
+            // Return a MainPagerFragment instance for each category - important: category names
+            // are part of main recycler view's parameter when invoking reddit public api.
+            String inLowerCase = fiveCategories[position].toLowerCase();
+            return MainPagerFragment.newInstance(position + 1, inLowerCase);
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 7;
+            // Show
+            return fiveCategories.length;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "HOT";
+                    return fiveCategories[0];
                 case 1:
-                    return "NEW";
+                    return fiveCategories[1];
                 case 2:
-                    return "TOP";
+                    return fiveCategories[2];
                 case 3:
-                    return "CONTROVERCIAL";
+                    return fiveCategories[3];
                 case 4:
-                    return "RISING";
-                case 5:
-                    return "MORE RIGINS";
-                case 6:
-                    return "RANDOM";
+                    return fiveCategories[4];
+
+                default:
+                    return fiveCategories[0];
             }
-            return null;
         }
     }
 }

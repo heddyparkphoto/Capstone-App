@@ -21,12 +21,17 @@ import java.util.concurrent.ExecutionException;
  */
 
 public class MainPagerFragment extends Fragment {
+
+    private static final String TAG = MainPagerFragment.class.getSimpleName();
+
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private static final String TAG = MainPagerFragment.class.getSimpleName();
+    private static final String ARG_CATEGORY = "category_name";
+    private String mCategory;
+
     private RecyclerView mRecylerView;
 
     private PostAdapter mPostAdapter;
@@ -42,6 +47,7 @@ public class MainPagerFragment extends Fragment {
         MainPagerFragment fragment = new MainPagerFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        args.putString(ARG_CATEGORY, category);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,6 +57,10 @@ public class MainPagerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         TextView emptyView = (TextView) rootView.findViewById(R.id.recyclerview_post_empty);
+
+        if (getArguments() != null && getArguments().getString(ARG_CATEGORY)!=null) {
+            mCategory = getArguments().getString(ARG_CATEGORY);
+        }
 
         mPostAdapter = new PostAdapter(
                 getActivity(),
@@ -74,8 +84,12 @@ public class MainPagerFragment extends Fragment {
 
         // Fetch data using AsyncTask
         ArrayList<MainPost> posts = null;
+        String cat = "new";     // Default category, overwrite with mCategory passed in
+        if (mCategory!=null){
+            cat = mCategory;
+        }
         try {
-            posts = ((FetchPostAsyncTask) new FetchPostAsyncTask().execute("todayilearned")).get();
+            posts = ((FetchPostAsyncTask) new FetchPostAsyncTask().execute("todayilearned", mCategory)).get();
         } catch (InterruptedException | ExecutionException e){
             Log.e(TAG, "" + e);
         }

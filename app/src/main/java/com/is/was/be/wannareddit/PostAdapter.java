@@ -60,9 +60,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     @Override
-    public int getItemCount() {
-        Log.d(TAG, "how???");
+    public int getItemViewType(int position) {
         return 0;
+    }
+
+    @Override
+    public int getItemCount() {
+        if (mPostList!=null){
+            Log.d(TAG, "=== what count?"+mPostList.size());
+            return mPostList.size();
+        } else {
+            Log.d(TAG, "how??? ");
+            return 0;
+        }
     }
 
     // MainPagerFragement sets this after AsyncTask returns before view binding is called
@@ -89,8 +99,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     @Override
     public void onBindViewHolder(PostViewHolder holder, int position) {
         /*
-            Biggest difference in Binding - we don't get passed-in ArrayList, instead have the 'position'
-            Move to that position first!
+            Weirdest problem I have caused at first - the postiton would only be 0
+            displaying a single item ever...
+            From stackoverflow googling - answers to 2 same problems were - one_post.xml
+            outermost Layout was the LinearLayout height was the 'match_parent'
+            should be wrap_content or other dimen but never the match_parent ...
+            I guess the LayoutManager that we set on the RecyclerView at first, knows it does not
+            need to layout any more children than just once !!! what a weird but clear
+            management !!! most efficient :)
+            I'm glad I tried their answers - learned that solution sometimes is much easier
+            than the problem.. :)
          */
 
         MainPost post = null;
@@ -103,7 +121,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     /*
-        RecyclerView holder part 2
+        RecyclerView holder
      */
     public static interface PostAdapterOnClickHandler {
         void handleOnClick (String subname, String postId, PostViewHolder passedIn);
