@@ -19,7 +19,9 @@ android {
         }
     }
 }
-
+repositories {
+    maven { url "https://jitpack.io" }
+}
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -37,6 +39,9 @@ dependencies {
 
     compile 'net.simonvt.schematic:schematic:0.7.0'
     annotationProcessor 'net.simonvt.schematic:schematic-compiler:0.7.0'
+    compile('com.github.afollestad.material-dialogs:core:0.9.1.0@aar') {
+        transitive = true
+    }
     testCompile 'junit:junit:4.12'
 }
 
