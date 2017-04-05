@@ -4,6 +4,8 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="action_add">ADD</string>
     <string name="action_refresh">Refresh</string>
+    <string name="noPostDataText">There are no post yet</string>
+    <string name="post_filler_text">This is a post of your favorite subreddit place holder.  Please wait until we fetch the real one.</string>
 
     <string-array name="interpolators">
         <item>Shutupandtakemymoney</item>

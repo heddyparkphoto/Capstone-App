@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return MainPagerFragment.newInstance(position + 1);
+            return MainPagerFragment.newInstance(position + 1, "HOT");
         }
 
         @Override
