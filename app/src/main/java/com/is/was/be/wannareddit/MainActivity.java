@@ -1,5 +1,8 @@
 package com.is.was.be.wannareddit;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,24 +11,31 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.awareness.Awareness;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.is.was.be.wannareddit.data.ForRedditProvider;
+import com.is.was.be.wannareddit.data.ListColumns;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +43,8 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity
         implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<Status>
+        ResultCallback<Status>,
+        LoaderManager.LoaderCallbacks<Cursor>
 {
     private final static String TAG = MainActivity.class.getSimpleName();
 
@@ -55,6 +66,13 @@ public class MainActivity extends AppCompatActivity
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
+    // Subreddit table handlers
+    private static final int LOADER_ID = 22;
+    private SimpleCursorAdapter mAdapter;
+    private Cursor mCursor;
+    public String mCurrentSubredditChoice;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +80,33 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
+
+        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+
+        /*
+            Popping the spinner from cursor - Credit to this site: Thanks to:
+            http://codetheory.in/understanding-and-populating-android-spinners/
+            (A note about the site though, there is a ziggling AD to the right on this site)
+         */
+        mAdapter = new SimpleCursorAdapter(this,
+                R.layout.spinner_text_control,
+                mCursor,
+                new String[]{ListColumns.SUBREDDITNAME},
+                new int[]{R.id.itemInSpinner},
+                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        // initialize to set the mAdapter to our spinner
+        loadSpinner();
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+//                super.onChanged();
+            }
+        });
 
         // Set up the ViewPager with the sections adapter.
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -112,16 +154,21 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (id == R.id.add) {
-//
+            Intent intent = new Intent(this, SubredditActivity.class);
+            startActivity(intent);
+
+
 //            isConnected = Utils.isConnected(mContext);
 //            if (isConnected) {
-                new MaterialDialog.Builder(this).title("Add Another Subreddit")
-                        .content("Add Another Subreddit Content!!")
-                        .inputType(InputType.TYPE_CLASS_TEXT)
-                        .input("askreddit", "", new MaterialDialog.InputCallback() {
-                            @Override
-                            public void onInput(MaterialDialog dialog, CharSequence input) {
-                                Toast.makeText(getApplicationContext(), "INPUT worked.", Toast.LENGTH_SHORT).show();
+
+            //******************
+//                new MaterialDialog.Builder(this).title("Add Another Subreddit")
+//                        .content("Add Another Subreddit Content!!")
+//                        .inputType(InputType.TYPE_CLASS_TEXT)
+//                        .input("askreddit", "", new MaterialDialog.InputCallback() {
+//                            @Override
+//                            public void onInput(MaterialDialog dialog, CharSequence input) {
+//                                Toast.makeText(getApplicationContext(), "INPUT worked.", Toast.LENGTH_SHORT).show();
 //                                // Receive user input. Make sure the subreddit doesn't already exist
 //                                // in the DB and proceed accordingly - our DB is case-sensitive we'll keep as user types in
 //                                // keep duplicates as well - it won't be a huge collection anyhow - they're not case-sensitive on reddit
@@ -158,12 +205,21 @@ public class MainActivity extends AppCompatActivity
 //
 //                                    mServiceIntent.putExtra(RECEIVER, mResultReceiverHelper);
 //                                    mContext.startService(mServiceIntent);
-                                }
 
-                        }).show();
+                                //********************
+//                                }
+
+//                        }).show();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
     }
 
     @Override
@@ -240,6 +296,52 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        return new CursorLoader(this, ForRedditProvider.MainContract.CONTENT_URI,
+                null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
+        mCursor = data;
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
+    }
+    private void loadSpinner() {
+
+        // Specify the layout to use when the list of choices appears
+        if (mAdapter!=null) {
+            mAdapter.setDropDownViewResource(R.layout.spinner_textview);
+        }
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                mCurrentSubredditChoice = ((TextView)view).getText().toString();
+                if (mSectionsPagerAdapter==null){
+                    mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+                }
+                mSectionsPagerAdapter.setSubreddit(mCurrentSubredditChoice);
+
+                Toast.makeText(getApplicationContext(), mCurrentSubredditChoice, Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        // Apply the adapter to the spinner
+        spinner.setAdapter(mAdapter);
+    }
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -248,6 +350,7 @@ public class MainActivity extends AppCompatActivity
 
         // For now, afford 5 categories that are similar to each other and more unique to the 'reddit'
         String[] fiveCategories = {"HOT", "NEW", "RISING", "CONTROVERSIAL", "TOP"};
+        String changingSubredditName = null;
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -259,7 +362,8 @@ public class MainActivity extends AppCompatActivity
             // Return a MainPagerFragment instance for each category - important: category names
             // are part of main recycler view's parameter when invoking reddit public api.
             String inLowerCase = fiveCategories[position].toLowerCase();
-            return MainPagerFragment.newInstance(position + 1, inLowerCase);
+            String subname = changingSubredditName;
+            return MainPagerFragment.newInstance(position + 1, inLowerCase, changingSubredditName);
         }
 
         @Override
@@ -285,6 +389,11 @@ public class MainActivity extends AppCompatActivity
                 default:
                     return fiveCategories[0];
             }
+        }
+
+
+        public void setSubreddit(String subreddit) {
+            this.changingSubredditName = subreddit;
         }
     }
 }

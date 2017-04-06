@@ -77,7 +77,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     // MainPagerFragement sets this after AsyncTask returns before view binding is called
     public void setPostList(ArrayList<MainPost> arr){
+
         this.mPostList = arr;
+        if (getItemCount()==0){
+            mEmptyTextView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyTextView.setVisibility(View.INVISIBLE);
+        }
+        notifyDataSetChanged();
     }
 
     @Override

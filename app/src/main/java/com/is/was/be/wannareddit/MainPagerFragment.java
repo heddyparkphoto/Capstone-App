@@ -30,7 +30,10 @@ public class MainPagerFragment extends Fragment {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static final String ARG_CATEGORY = "category_name";
+    private static final String ARG_CURR_SUB = "subreddit";
+
     private String mCategory;
+    private String mSubName;
 
     private RecyclerView mRecylerView;
 
@@ -43,11 +46,12 @@ public class MainPagerFragment extends Fragment {
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static MainPagerFragment newInstance(int sectionNumber, String category) {
+    public static MainPagerFragment newInstance(int sectionNumber, String category, String currSub) {
         MainPagerFragment fragment = new MainPagerFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         args.putString(ARG_CATEGORY, category);
+        args.putString(ARG_CURR_SUB, currSub);
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,6 +64,10 @@ public class MainPagerFragment extends Fragment {
 
         if (getArguments() != null && getArguments().getString(ARG_CATEGORY)!=null) {
             mCategory = getArguments().getString(ARG_CATEGORY);
+        }
+
+        if (getArguments() != null && getArguments().getString(ARG_CURR_SUB)!=null) {
+            mSubName = getArguments().getString(ARG_CURR_SUB);
         }
 
         mPostAdapter = new PostAdapter(
@@ -88,8 +96,16 @@ public class MainPagerFragment extends Fragment {
         if (mCategory!=null){
             cat = mCategory;
         }
+        String subnm = "todayilearned";     // Default subreddit, overwrite when avail
+        if (mSubName!=null){
+            subnm = mSubName;
+        }
+
         try {
-            posts = ((FetchPostAsyncTask) new FetchPostAsyncTask().execute("todayilearned", mCategory)).get();
+//            posts = ((FetchPostAsyncTask) new FetchPostAsyncTask().execute("todayilearned", mCategory)).get();
+//            posts = ((FetchPostAsyncTask) new FetchPostAsyncTask().execute("todayilearned", mCategory)).get();
+            posts = ((FetchPostAsyncTask) new FetchPostAsyncTask().execute(subnm, cat)).get();
+
         } catch (InterruptedException | ExecutionException e){
             Log.e(TAG, "" + e);
         }
