@@ -2,7 +2,6 @@ package com.is.was.be.wannareddit;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -26,7 +26,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.awareness.Awareness;
 import com.google.android.gms.common.ConnectionResult;
@@ -100,14 +99,6 @@ public class MainActivity extends AppCompatActivity
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mSectionsPagerAdapter.registerDataSetObserver(new DataSetObserver() {
-            @Override
-            public void onChanged() {
-                mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-//                super.onChanged();
-            }
-        });
-
         // Set up the ViewPager with the sections adapter.
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -154,62 +145,9 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (id == R.id.add) {
+            // Subreddit managing activity - Use Dialog
             Intent intent = new Intent(this, SubredditActivity.class);
             startActivity(intent);
-
-
-//            isConnected = Utils.isConnected(mContext);
-//            if (isConnected) {
-
-            //******************
-//                new MaterialDialog.Builder(this).title("Add Another Subreddit")
-//                        .content("Add Another Subreddit Content!!")
-//                        .inputType(InputType.TYPE_CLASS_TEXT)
-//                        .input("askreddit", "", new MaterialDialog.InputCallback() {
-//                            @Override
-//                            public void onInput(MaterialDialog dialog, CharSequence input) {
-//                                Toast.makeText(getApplicationContext(), "INPUT worked.", Toast.LENGTH_SHORT).show();
-//                                // Receive user input. Make sure the subreddit doesn't already exist
-//                                // in the DB and proceed accordingly - our DB is case-sensitive we'll keep as user types in
-//                                // keep duplicates as well - it won't be a huge collection anyhow - they're not case-sensitive on reddit
-//
-//                                Cursor c = mContext.getContentResolver().query(PostProvider.??es.CONTENT_URI,
-//                                new String[]{ListsColumns.SUBNAME}, ListsColumns.SUBNAME + "= ?",
-//                                        new String[]{input}, null);
-//                                if (c.getCount() != 0) {
-//                                    Toast toast =
-//                                            Toast.makeText(mContext, "This subreddit is already saved!",
-//                                                    Toast.LENGTH_LONG);
-//                                    toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
-//                                    toast.show();
-//                                    return;
-//                                } else {
-//                                    // Add the stock to DB
-//                                    mServiceIntent.putExtra("tag", TaskTagKind.ADD);
-//                                    mServiceIntent.putExtra("symbol", input.toString());
-//
-//                                    mResultReceiverHelper = new TaskHelper(new Handler());
-//                                    mResultReceiverHelper.setReceiver(
-//                                            new TaskHelper.Receiver() {
-//                                                @Override
-//                                                public void onReceiveResult(int resultCode, Bundle resultData) {
-//                                                    String msg = resultData.getString(Intent.EXTRA_TEXT);
-//                                                    if (resultCode==StockTaskService.INVALID_NAME){
-//                                                        msg = String.format(Locale.US, getString(R.string.subreddit_not_found), input);
-//                                                    }
-//                                                    Toast toast = Toast.makeText(mContext, msg, Toast.LENGTH_LONG);
-//                                                    toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
-//                                                    toast.show();
-//                                                }
-//                                            });
-//
-//                                    mServiceIntent.putExtra(RECEIVER, mResultReceiverHelper);
-//                                    mContext.startService(mServiceIntent);
-
-                                //********************
-//                                }
-
-//                        }).show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -218,8 +156,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-
-
     }
 
     @Override
@@ -298,13 +234,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
+        // Load data into the Spinner
         return new CursorLoader(this, ForRedditProvider.MainContract.CONTENT_URI,
                 null, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        // Load data into the Spinner
         mAdapter.swapCursor(data);
         mCursor = data;
     }
@@ -324,13 +261,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 mCurrentSubredditChoice = ((TextView)view).getText().toString();
-                if (mSectionsPagerAdapter==null){
-                    mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-                }
-                mSectionsPagerAdapter.setSubreddit(mCurrentSubredditChoice);
 
-                Toast.makeText(getApplicationContext(), mCurrentSubredditChoice, Toast.LENGTH_SHORT).show();
-
+//                Toast.makeText(getApplicationContext(), mCurrentSubredditChoice, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -338,19 +270,15 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
-
-        // Apply the adapter to the spinner
-        spinner.setAdapter(mAdapter);
     }
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         // For now, afford 5 categories that are similar to each other and more unique to the 'reddit'
         String[] fiveCategories = {"HOT", "NEW", "RISING", "CONTROVERSIAL", "TOP"};
-        String changingSubredditName = null;
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -362,13 +290,13 @@ public class MainActivity extends AppCompatActivity
             // Return a MainPagerFragment instance for each category - important: category names
             // are part of main recycler view's parameter when invoking reddit public api.
             String inLowerCase = fiveCategories[position].toLowerCase();
-            String subname = changingSubredditName;
-            return MainPagerFragment.newInstance(position + 1, inLowerCase, changingSubredditName);
+
+            return MainPagerFragment.newInstance(position + 1, inLowerCase, mCurrentSubredditChoice);
         }
 
         @Override
         public int getCount() {
-            // Show
+            // This matches the available tabs
             return fiveCategories.length;
         }
 
@@ -389,11 +317,6 @@ public class MainActivity extends AppCompatActivity
                 default:
                     return fiveCategories[0];
             }
-        }
-
-
-        public void setSubreddit(String subreddit) {
-            this.changingSubredditName = subreddit;
         }
     }
 }

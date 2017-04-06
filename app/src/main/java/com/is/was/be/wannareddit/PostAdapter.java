@@ -2,7 +2,6 @@ package com.is.was.be.wannareddit;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,10 +66,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     @Override
     public int getItemCount() {
         if (mPostList!=null){
-            Log.d(TAG, "=== what count?"+mPostList.size());
             return mPostList.size();
         } else {
-            Log.d(TAG, "how??? ");
             return 0;
         }
     }
@@ -84,7 +81,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         } else {
             mEmptyTextView.setVisibility(View.INVISIBLE);
         }
-        notifyDataSetChanged();
     }
 
     @Override

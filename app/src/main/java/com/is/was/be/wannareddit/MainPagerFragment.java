@@ -93,6 +93,7 @@ public class MainPagerFragment extends Fragment {
         // Fetch data using AsyncTask
         ArrayList<MainPost> posts = null;
         String cat = "new";     // Default category, overwrite with mCategory passed in
+                                // LATER, WE CAN USE THE USER'S Preference instead.
         if (mCategory!=null){
             cat = mCategory;
         }
@@ -102,7 +103,6 @@ public class MainPagerFragment extends Fragment {
         }
 
         try {
-//            posts = ((FetchPostAsyncTask) new FetchPostAsyncTask().execute("todayilearned", mCategory)).get();
 //            posts = ((FetchPostAsyncTask) new FetchPostAsyncTask().execute("todayilearned", mCategory)).get();
             posts = ((FetchPostAsyncTask) new FetchPostAsyncTask().execute(subnm, cat)).get();
 
