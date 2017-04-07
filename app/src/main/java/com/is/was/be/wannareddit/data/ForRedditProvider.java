@@ -19,7 +19,7 @@ public class ForRedditProvider {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
     interface Path {
-        String PATH_SUBRED = "subreddits";
+        String PATH_SUBRED = "subredditnames";
         String PATH_WIDGET = "widgetposts";
     }
 
@@ -37,7 +37,7 @@ public class ForRedditProvider {
         /* ContentUri is for select everything */
         @ContentUri(
                 path = Path.PATH_SUBRED,
-                type = "vnd.android.cursor.dir/subreddits"
+                type = "vnd.android.cursor.dir/subredditnames"
         )
 
         /* Invoke this way: MainContract.CONTENT_URI  */
@@ -51,7 +51,7 @@ public class ForRedditProvider {
         @InexactContentUri(
                 name = Path.PATH_SUBRED,
                 path = Path.PATH_SUBRED + "/#",
-                type = "vnd.android.cursor.item/subreddits",
+                type = "vnd.android.cursor.item/subredditnames",
                 whereColumn = {ListColumns._ID},
                 pathSegment = {1}
         )

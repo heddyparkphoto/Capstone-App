@@ -43,7 +43,8 @@ public class MainActivity extends AppCompatActivity
         implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<Status>,
-        LoaderManager.LoaderCallbacks<Cursor>
+        LoaderManager.LoaderCallbacks<Cursor>,
+        MainPagerFragment.OnPostItemSelectedListener
 {
     private final static String TAG = MainActivity.class.getSimpleName();
 
@@ -155,6 +156,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
+//        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+//        getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
         super.onResume();
     }
 
@@ -260,8 +263,7 @@ public class MainActivity extends AppCompatActivity
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                mCurrentSubredditChoice = ((TextView)view).getText().toString();
-
+                    mCurrentSubredditChoice = ((TextView) view).getText().toString();
 //                Toast.makeText(getApplicationContext(), mCurrentSubredditChoice, Toast.LENGTH_SHORT).show();
             }
 
@@ -270,7 +272,10 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+
+        spinner.setAdapter(mAdapter);
     }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -318,5 +323,15 @@ public class MainActivity extends AppCompatActivity
                     return fiveCategories[0];
             }
         }
+    }
+
+    @Override
+    public void OnPostItemClick(String subname, String postId) {
+//        Intent intent = new Intent(this, SubredditActivity.class);
+//        Bundle args = new Bundle();
+//        args.putString("SUB", subname);
+//        args.putString("POID", postId);
+//        intent.putExtra("BUNDLE", args);
+//        startActivity(intent);
     }
 }

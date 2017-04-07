@@ -101,9 +101,9 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
                             }
                             MainPost po = new MainPost();
                             po.setPostTitleLarge(one.getString("title"));
-                            po.setPostId(one.getString("name"));
+                            po.setPostId(one.getString("id"));
                             po.setThumburl(one.getString("thumbnail"));
-                            po.setDomainUrl(one.getString("domain"));
+                            po.setDomainUrl(one.getString("url"));
                             returnList.add(po);
                         }
                     }
