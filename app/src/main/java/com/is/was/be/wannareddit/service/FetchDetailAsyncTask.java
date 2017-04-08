@@ -24,6 +24,7 @@ import java.util.ArrayList;
 public class FetchDetailAsyncTask extends AsyncTask <String, Void, ArrayList<String>>{
 
     private final static String TAG = "FetchDetailAT";
+    public static final int MAX_NUM_COMMENTS = 20;
 
     private OkHttpClient client = new OkHttpClient();
     private Context mContext;
@@ -49,7 +50,7 @@ public class FetchDetailAsyncTask extends AsyncTask <String, Void, ArrayList<Str
 
         StringBuilder urlStringBuilder = new StringBuilder(COMMENTS_BASE_STRING);
 //        urlStringBuilder.append("https://www.reddit.com/r/todayilearned/comments/63bx3b.json");
-        urlStringBuilder.append(subreddit).append("/").append(postId).append(ENDING_BASE_STRING);
+        urlStringBuilder.append(subreddit).append("/").append(COMMENTS).append("/").append(postId).append(ENDING_BASE_STRING);
 
         Log.d(TAG, "VERIFY: "+urlStringBuilder.toString());
 
@@ -96,6 +97,9 @@ public class FetchDetailAsyncTask extends AsyncTask <String, Void, ArrayList<Str
 
                 if (dataArr!=null) {
                     int total = dataArr.length();
+                    if (total > MAX_NUM_COMMENTS){
+                        total = MAX_NUM_COMMENTS;
+                    }
 
                     returnList = new ArrayList<> ();
 
@@ -106,13 +110,15 @@ public class FetchDetailAsyncTask extends AsyncTask <String, Void, ArrayList<Str
                             if (!"t1".equalsIgnoreCase(kindType)) {
                                 continue;
                             }
-                            JSONObject dataObj = postObj.getJSONObject("data");
-                            JSONObject aCommentObj = dataObj.getJSONObject("body");
-                            String aComment = "";
-                            if (aComment!=null){
-                                aComment = aCommentObj.toString();
-                            }
-                            aComment += " created utc " + dataObj.getLong("created_utc");
+                            JSONObject commentObj = postJo.getJSONObject("data");
+
+//                            JSONObject comment = commentObj.getJSONObject("body");
+//                            String aComment = commentObj.getJSONObject("body").toString();
+                            String aComment = commentObj.getString("body");
+//                            if (aComment!=null){
+//                                aComment = aCommentObj.toString();
+//                            }
+                            aComment += " created utc " + commentObj.getLong("created_utc");
                             returnList.add(aComment);
                         }
                     }

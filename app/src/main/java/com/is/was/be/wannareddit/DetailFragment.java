@@ -19,9 +19,6 @@ import com.is.was.be.wannareddit.service.FetchDetailAsyncTask;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by hyeryungpark on 4/7/17.
  */
@@ -30,12 +27,17 @@ public class DetailFragment extends Fragment {
 
     private final String TAG = DetailFragment.class.getSimpleName();
 
-    @BindView(R2.id.post_title_text) TextView postTitle;
-    @BindView(R2.id.post_image) ImageView postImage;
-    @BindView(R2.id.listview_comments)
+//    @BindView(R2.id.post_title_text) TextView postTitle;
+//    @BindView(R2.id.post_image) ImageView postImage;
+//    @BindView(R2.id.listview_comments) ListView mListView;
+//    @BindView(R2.id.recyclerview_comments_empty) TextView mEmptyView;
+//    @BindView(R2.id.media_control) ImageButton mediaButton;
+
+    TextView postTitle;
+    ImageView postImage;
     ListView mListView;
-    @BindView(R2.id.recyclerview_comments_empty) TextView mEmptyView;
-    @BindView(R2.id.media_control) ImageButton mediaButton;
+    TextView mEmptyView;
+    ImageButton mediaButton;
 
     // Params needed for the details api - passed in by DetailActivity or MainActivity if Tablet
     String mSubrdd;
@@ -48,6 +50,7 @@ public class DetailFragment extends Fragment {
     ArrayAdapter<String> mCommentAdapter;
 
     public DetailFragment(){
+
     }
 
     @Nullable
@@ -56,7 +59,16 @@ public class DetailFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-        ButterKnife.bind(getActivity());
+        postTitle = (TextView) rootView.findViewById(R.id.post_title_text);
+        postImage = (ImageView) rootView.findViewById(R.id.post_image);
+        mListView = (ListView) rootView.findViewById(R.id.listview_comments);
+        mEmptyView= (TextView) rootView.findViewById(R.id.recyclerview_comments_empty);
+        mediaButton= (ImageButton) rootView.findViewById(R.id.media_control);
+
+
+
+
+//        ButterKnife.bind(getActivity());
 
         // Find parameters need: subreddit name and the post's id
 
@@ -95,11 +107,15 @@ public class DetailFragment extends Fragment {
 //            comments = ((FetchDetailAsyncTask) new FetchDetailAsyncTask().execute("todayilearned", "63bx3b")).get();
             comments = ((FetchDetailAsyncTask) new FetchDetailAsyncTask().execute(mSubrdd, mPostId)).get();
 
+            if (null!=comments){
+                mCommentAdapter = new ArrayAdapter<String>(getActivity(), R.layout.one_comment);
+            }
             for (String c: comments){
                 mCommentAdapter.add(c);
             }
 
             mListView.setAdapter(mCommentAdapter);
+            postTitle.setText(mPostId);
 
         } catch (InterruptedException | ExecutionException e){
             Log.e(TAG, "" + e);
