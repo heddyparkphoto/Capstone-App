@@ -10,6 +10,7 @@ public class MainPost {
     String postTitleLarge;
     String postId;
     String domainUrl;
+    String postSubreddit;
 
     public String getPostId() {
         return postId;
@@ -43,5 +44,13 @@ public class MainPost {
         this.domainUrl = domainUrl;
     }
 
+
+    public String getPostSubreddit() {
+        return postSubreddit;
+    }
+
+    public void setPostSubreddit(String postSubreddit) {
+        this.postSubreddit = postSubreddit;
+    }
 
 }

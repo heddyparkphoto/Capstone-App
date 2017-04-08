@@ -75,7 +75,14 @@ public class MainPagerFragment extends Fragment {
                 new PostAdapter.PostAdapterOnClickHandler() {
                     @Override
                     public void handleOnClick(String subname, String postId, PostAdapter.PostViewHolder passedIn) {
-                        ((OnPostItemSelectedListener)getActivity()).OnPostItemClick(subname, postId);
+
+                        if (passedIn!=null) {
+                            String subR = passedIn.subname;
+                            String psId = passedIn.postId;
+                            ((OnPostItemSelectedListener) getActivity()).OnPostItemClick(subR, psId);
+                        } else {
+                            Log.e(TAG, "Clicked post was null.  Nothing to do.");
+                        }
                     }
                 },
                 emptyView);

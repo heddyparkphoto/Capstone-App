@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.is.was.be.wannareddit.MainPost;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -19,11 +18,12 @@ import java.net.URL;
 import java.util.ArrayList;
 
 /**
- * Created by hyeryungpark on 4/5/17.
+ * Created by hyeryungpark on 4/7/17.
  */
 
-public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPost>> {
-    private final static String TAG = "FetchPostAsyncTask";
+public class FetchDetailAsyncTask extends AsyncTask <String, Void, ArrayList<String>>{
+
+    private final static String TAG = "FetchDetailAT";
 
     private OkHttpClient client = new OkHttpClient();
     private Context mContext;
@@ -39,16 +39,17 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
     }
 
     @Override
-    protected ArrayList<MainPost> doInBackground(String... args) {
+    protected ArrayList<String> doInBackground(String... args) {
 
         String subreddit = args[0];
-        String category = args[1];
-        final String SUBREDDIT_BASE_STRING = "https://www.reddit.com/r/";
-        final String ENDING_BASE_STRING = ".json?limit=25";
+        String postId = args[1];
+        final String COMMENTS_BASE_STRING = "https://www.reddit.com/r/";
+        final String COMMENTS = "comments";
+        final String ENDING_BASE_STRING = ".json";
 
-        StringBuilder urlStringBuilder = new StringBuilder(SUBREDDIT_BASE_STRING);
-//        urlStringBuilder.append("https://www.reddit.com/r/todayilearned/hot.json?limit=25");
-        urlStringBuilder.append(subreddit).append("/").append(category).append(ENDING_BASE_STRING);
+        StringBuilder urlStringBuilder = new StringBuilder(COMMENTS_BASE_STRING);
+//        urlStringBuilder.append("https://www.reddit.com/r/todayilearned/comments/63bx3b.json");
+        urlStringBuilder.append(subreddit).append("/").append(postId).append(ENDING_BASE_STRING);
 
         Log.d(TAG, "VERIFY: "+urlStringBuilder.toString());
 
@@ -56,13 +57,13 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
         String getResponse;
 
         JSONObject jsonObject = null;
-        JSONArray jsonArray;
+        JSONArray jsonArray = null;
 
         URL url;
         try {
             url = new URL(urlStringBuilder.toString());
             getResponse = fetchData(urlStringBuilder.toString());
-            jsonObject = new JSONObject(getResponse);
+            jsonArray = new JSONArray(getResponse);
 
         } catch (MalformedURLException e){
             Log.e(TAG, ""+e);
@@ -72,20 +73,27 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
             Log.e(TAG, ""+e);
         }
 
-        return parsePostData(jsonObject);
+        return parseDetailData(jsonArray);
     }
 
 
-    public static ArrayList<MainPost> parsePostData(JSONObject jo){
-        ArrayList<MainPost> returnList = null;
+    public static ArrayList<String> parseDetailData(JSONArray jo){
+        ArrayList<String> returnList = null;
 
         JSONObject one;
-        boolean over18;
+
+        if (jo.length() != 2){
+            Log.e(TAG, "Unexpected response.  Cannot find details for the post.");
+            return null;
+        }
 
         try {
-            if (jo.getString("kind")!=null){
-                JSONObject container = jo.getJSONObject("data");
-                JSONArray dataArr = container.getJSONArray("children");
+            JSONObject postObj = (JSONObject)jo.get(1);
+
+            if (postObj.getJSONObject("data")!=null){
+                JSONObject pOb = postObj.getJSONObject("data");
+                JSONArray dataArr = pOb.getJSONArray("children");
+
                 if (dataArr!=null) {
                     int total = dataArr.length();
 
@@ -94,18 +102,18 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
                     for (int i = 0; i < total; i++) {
                         JSONObject postJo = dataArr.getJSONObject(i);
                         if (null != postJo) {
-                            one = postJo.getJSONObject("data");
-                            over18 = one.getBoolean("over_18");
-                            if (over18) {
+                            String kindType = postJo.getString("kind");
+                            if (!"t1".equalsIgnoreCase(kindType)) {
                                 continue;
                             }
-                            MainPost po = new MainPost();
-                            po.setPostTitleLarge(one.getString("title"));
-                            po.setPostId(one.getString("id"));
-                            po.setThumburl(one.getString("thumbnail"));
-                            po.setDomainUrl(one.getString("url"));
-                            po.setPostSubreddit(one.getString("subreddit"));
-                            returnList.add(po);
+                            JSONObject dataObj = postObj.getJSONObject("data");
+                            JSONObject aCommentObj = dataObj.getJSONObject("body");
+                            String aComment = "";
+                            if (aComment!=null){
+                                aComment = aCommentObj.toString();
+                            }
+                            aComment += " created utc " + dataObj.getLong("created_utc");
+                            returnList.add(aComment);
                         }
                     }
                 }

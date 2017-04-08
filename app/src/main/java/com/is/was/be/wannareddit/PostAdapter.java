@@ -35,7 +35,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         ImageView thumbnailView;
         TextView postTextView;
 
-        //non-view fields
+        //non-view fields, required to fetch detail json request
         String subname;
         String postId;
 
@@ -44,8 +44,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             thumbnailView = (ImageView) view.findViewById(R.id.thumbnail);
             postTextView = (TextView) view.findViewById(R.id.post_title);
-
-            // Is there a way to set non-view values, the subname and postId?
+            subname = "";
+            postId = "";
 
             // responsible for click event
             view.setOnClickListener(this);
@@ -121,6 +121,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.postTextView.setText(post.getPostTitleLarge());
         // image
         Picasso.with(mContext).load(post.getThumburl()).into(holder.thumbnailView);
+        holder.postId = post.getPostId();
+        holder.subname = post.getPostSubreddit();
     }
 
     /*

@@ -8,6 +8,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -28,9 +29,11 @@
             android:authorities="com.is.was.be.wannareddit.data.ForRedditProvider"
             android:exported="false"/>
 
-        <activity android:name=".SubredditActivity"
-            android:theme="@style/DiaglogTheme"
-            >
+        <activity
+            android:name=".SubredditActivity"
+            android:theme="@style/DiaglogTheme">
+        </activity>
+        <activity android:name=".DetailActivity">
         </activity>
     </application>
 
