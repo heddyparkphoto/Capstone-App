@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_subrdd_ui_labels">
+        <item>Shutupandtakemymoney</item>
+        <item>AskReddit</item>
+        <item>todayilearned</item>
+    </string-array>
+    <string-array name="pref_subrdd_values_saved">
+        <item>Shutupandtakemymoney</item>
+        <item>AskReddit</item>
+        <item>todayilearned</item>
+    </string-array>
+</resources>
