@@ -13,27 +13,23 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         if (savedInstanceState == null) {
-            String subName = "";
-            String postId = "";
+            MainPost mMainPost = null;
 
             // in order to de-couple in either UI use bundle arguments
             Intent intent = getIntent();
             if (null != intent) {
-                if (intent.getBundleExtra("BUNDLE")!= null) {
-                    Bundle bundle = intent.getBundleExtra("BUNDLE");
-
-                    if (bundle.getString("SUB") != null) {
-                        subName = bundle.getString("SUB");
-                    }
-                    if (bundle.getString("POID") != null) {
-                        postId = bundle.getString("POID");
+                if (intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT) != null) {
+                    Bundle bundle = intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT);
+                    if (bundle.getParcelable(DetailFragment.PARCEL_ON_ARG) != null) {
+                        mMainPost = bundle.getParcelable(DetailFragment.PARCEL_ON_ARG);
+                    } else {
+                        // Nothing to-do for now.
                     }
                 }
             }
 
             Bundle args = new Bundle();
-            args.putString(DetailFragment.KEY_SUBRDDT, subName);
-            args.putString(DetailFragment.KEY_POSTID, postId);
+            args.putParcelable(DetailFragment.PARCEL_ON_ARG, mMainPost);
 
             DetailFragment df = new DetailFragment();
             df.setArguments(args);

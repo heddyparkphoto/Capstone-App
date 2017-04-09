@@ -1,6 +1,7 @@
 package com.is.was.be.wannareddit.service;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -15,7 +16,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -43,25 +43,25 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
 
         String subreddit = args[0];
         String category = args[1];
-        final String SUBREDDIT_BASE_STRING = "https://www.reddit.com/r/";
-        final String ENDING_BASE_STRING = ".json?limit=25";
 
-        StringBuilder urlStringBuilder = new StringBuilder(SUBREDDIT_BASE_STRING);
-//        urlStringBuilder.append("https://www.reddit.com/r/todayilearned/hot.json?limit=25");
-        urlStringBuilder.append(subreddit).append("/").append(category).append(ENDING_BASE_STRING);
+        // completed url example: "https://www.reddit.com/r/todayilearned/hot.json?limit=25"
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("https")
+                .authority("www.reddit.com")
+                .appendPath("r")
+                .appendPath(subreddit)
+                .appendPath(category.concat(".json"))
+                .appendQueryParameter("limit", "25");
 
-        Log.d(TAG, "VERIFY: "+urlStringBuilder.toString());
+        Log.d(TAG, "VERIFY: "+ builder.build().toString());
 
-        String returnStr = null;
         String getResponse;
 
         JSONObject jsonObject = null;
         JSONArray jsonArray;
 
-        URL url;
         try {
-            url = new URL(urlStringBuilder.toString());
-            getResponse = fetchData(urlStringBuilder.toString());
+            getResponse = fetchData(builder.build().toString());
             jsonObject = new JSONObject(getResponse);
 
         } catch (MalformedURLException e){
@@ -100,11 +100,15 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
                                 continue;
                             }
                             MainPost po = new MainPost();
-                            po.setPostTitleLarge(one.getString("title"));
                             po.setPostId(one.getString("id"));
-                            po.setThumburl(one.getString("thumbnail"));
-                            po.setDomainUrl(one.getString("url"));
                             po.setPostSubreddit(one.getString("subreddit"));
+                            po.setAuthor(one.getString("author"));
+                            po.setPostTitleLarge(one.getString("title"));
+                            po.setCreatedUtcTime(one.getLong("created_utc"));
+                            po.setNumComments(one.getInt("num_comments"));
+                            po.setThumburl(one.getString("thumbnail"));
+                            po.setUserUrl(one.getString("url"));
+
                             returnList.add(po);
                         }
                     }

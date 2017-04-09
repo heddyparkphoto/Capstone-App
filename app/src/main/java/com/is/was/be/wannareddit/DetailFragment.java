@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.is.was.be.wannareddit.service.FetchDetailAsyncTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -24,6 +25,9 @@ import java.util.concurrent.ExecutionException;
  */
 
 public class DetailFragment extends Fragment {
+
+    public static final String PARCEL_ON_ARG = "PARCEL_ON_ARG";
+    public static final String EXTRA_ON_INTENT = "EXTRA_ON_INTENT";
 
     private final String TAG = DetailFragment.class.getSimpleName();
 
@@ -43,8 +47,7 @@ public class DetailFragment extends Fragment {
     String mSubrdd;
     String mPostId;
 
-    public final static String KEY_SUBRDDT = "KEY_SUBRDDT";
-    public final static String KEY_POSTID = "KEY_POSTID";
+    private MainPost mFragPost;
 
     // Comment text ArrayAdapter
     ArrayAdapter<String> mCommentAdapter;
@@ -65,33 +68,35 @@ public class DetailFragment extends Fragment {
         mEmptyView= (TextView) rootView.findViewById(R.id.recyclerview_comments_empty);
         mediaButton= (ImageButton) rootView.findViewById(R.id.media_control);
 
-
-
-
 //        ButterKnife.bind(getActivity());
 
-        // Find parameters need: subreddit name and the post's id
 
         Intent intent = getActivity().getIntent();
-
         if (null != intent) {
-            if (intent.getStringExtra(KEY_SUBRDDT)!=null){
-                mSubrdd = intent.getStringExtra(KEY_SUBRDDT);
+            if (intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT) != null) {
+                Bundle bundle = intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT);
+                if (bundle.getParcelable(DetailFragment.PARCEL_ON_ARG) != null) {
+                    mFragPost = bundle.getParcelable(DetailFragment.PARCEL_ON_ARG);
+                    mSubrdd = mFragPost.getPostSubreddit();
+                    mPostId = mFragPost.getPostId();
+                } else {
+                    // Nothing to-do for now.
+                }
             }
-            if (intent.getStringExtra(KEY_POSTID)!=null){
-                mPostId = intent.getStringExtra(KEY_POSTID);
+        } else {
+            if (getArguments() != null) {
+                Bundle args = getArguments();
+                if (args != null) {
+                    mFragPost = args.getParcelable(DetailFragment.PARCEL_ON_ARG);
+                    if (mFragPost!=null) {
+                        mSubrdd = mFragPost.getPostSubreddit();
+                        mPostId = mFragPost.getPostId();
+                    }
+                }
             }
         }
-        // ^^^^^^^^^^^^^ FIX CONSTANTS LATER!!! ~~~~~~~~~~~~~~~~
-        if (getArguments()!= null){
-            Bundle args = getArguments();
-            if (args != null){
-                mSubrdd = args.getString(DetailFragment.KEY_SUBRDDT);
-            }
-            if (args != null){
-                mPostId = args.getString(DetailFragment.KEY_POSTID);
-            }
-        }
+
+        // Default post that hopefully never needs to be used, but safegaurd the Detail view
         if (mSubrdd==null ) mSubrdd = "todayilearned";
         if (mPostId == null) mPostId = "63bx3b";
 
@@ -104,19 +109,23 @@ public class DetailFragment extends Fragment {
         ArrayList<String> comments;
 
         try {
-//            comments = ((FetchDetailAsyncTask) new FetchDetailAsyncTask().execute("todayilearned", "63bx3b")).get();
+
             comments = ((FetchDetailAsyncTask) new FetchDetailAsyncTask().execute(mSubrdd, mPostId)).get();
 
             if (null!=comments){
-                mCommentAdapter = new ArrayAdapter<String>(getActivity(), R.layout.one_comment);
+                mCommentAdapter = new ArrayAdapter<>(getActivity(), R.layout.one_comment);
             }
             for (String c: comments){
                 mCommentAdapter.add(c);
             }
 
             mListView.setAdapter(mCommentAdapter);
-            postTitle.setText(mPostId);
-
+            if (mFragPost!=null) {
+                postTitle.setText(mFragPost.getPostTitleLarge());
+                if (mFragPost.getThumburl()!=null) {
+                    Picasso.with(getActivity()).load(mFragPost.getThumburl()).into(postImage);
+                }
+            }
         } catch (InterruptedException | ExecutionException e){
             Log.e(TAG, "" + e);
         }

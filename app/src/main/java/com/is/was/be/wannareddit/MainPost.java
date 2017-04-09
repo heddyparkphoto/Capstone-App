@@ -1,16 +1,63 @@
 package com.is.was.be.wannareddit;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by hyeryungpark on 4/5/17.
  */
 
-public class MainPost {
+public class MainPost implements Parcelable {
 
-    String thumburl;
-    String postTitleLarge;
+    // about vars
     String postId;
-    String domainUrl;
     String postSubreddit;
+    String author;
+
+    // stats
+    long createdUtcTime;
+    int numComments;
+
+    // main content
+    String postTitleLarge;
+
+    // vars for more info
+    String thumburl;
+    String userUrl;   // "url" for now sometimes a website, sometimes a media seems to play in the Web browser.
+
+    public MainPost(){
+        super();
+    }
+
+    protected MainPost(Parcel in) {
+        // about post
+        postId = in.readString();
+        postSubreddit = in.readString();
+        author = in.readString();
+
+        // stats
+        createdUtcTime = in.readLong();
+        numComments = in.readInt();
+
+        // main content
+        postTitleLarge = in.readString();
+
+        // for more
+        thumburl = in.readString();
+        userUrl = in.readString();
+    }
+
+    public static final Creator<MainPost> CREATOR = new Creator<MainPost>() {
+        @Override
+        public MainPost createFromParcel(Parcel in) {
+            return new MainPost(in);
+        }
+
+        @Override
+        public MainPost[] newArray(int size) {
+            return new MainPost[size];
+        }
+    };
 
     public String getPostId() {
         return postId;
@@ -36,15 +83,6 @@ public class MainPost {
         this.thumburl = thumburl;
     }
 
-    public String getDomainUrl() {
-        return domainUrl;
-    }
-
-    public void setDomainUrl(String domainUrl) {
-        this.domainUrl = domainUrl;
-    }
-
-
     public String getPostSubreddit() {
         return postSubreddit;
     }
@@ -53,4 +91,62 @@ public class MainPost {
         this.postSubreddit = postSubreddit;
     }
 
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public long getCreatedUtcTime() {
+        return createdUtcTime;
+    }
+
+    public void setCreatedUtcTime(long createdUtcTime) {
+        this.createdUtcTime = createdUtcTime;
+    }
+
+    public int getNumComments() {
+        return numComments;
+    }
+
+    public void setNumComments(int numComments) {
+        this.numComments = numComments;
+    }
+
+    public String getUserUrl() {
+        return userUrl;
+    }
+
+    public void setUserUrl(String userUrl) {
+        this.userUrl = userUrl;
+    }
+
+    @Override
+    public String toString(){
+        return postTitleLarge;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(postId);
+        parcel.writeString(postSubreddit);
+        parcel.writeString(author);
+
+        parcel.writeLong(createdUtcTime);
+        parcel.writeInt(numComments);
+
+        parcel.writeString(postTitleLarge);
+
+        parcel.writeString(thumburl);
+        parcel.writeString(userUrl);
+
+
+    }
 }

@@ -35,9 +35,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         ImageView thumbnailView;
         TextView postTextView;
 
-        //non-view fields, required to fetch detail json request
-        String subname;
+        /*
+            non-view fields, postId and subname are required to fetch detail json request
+            other fields are used for Detail UI so that json parsing for the Detail can be
+            focused on Comments
+         */
         String postId;
+        String subname;
+        String author;
+        long createdUtcTime;
+        int numComments;
+        String postTitleLarge;
+        String thumburl;
+        String userUrl;
 
         public PostViewHolder(View view) {
             super(view);
@@ -46,6 +56,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             postTextView = (TextView) view.findViewById(R.id.post_title);
             subname = "";
             postId = "";
+            author = "";
+            createdUtcTime = 1400000L;
+            numComments=0;
+            postTitleLarge = "";
+            thumburl = "";
+            userUrl = "";
 
             // responsible for click event
             view.setOnClickListener(this);
@@ -123,6 +139,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Picasso.with(mContext).load(post.getThumburl()).into(holder.thumbnailView);
         holder.postId = post.getPostId();
         holder.subname = post.getPostSubreddit();
+        holder.author = post.getAuthor();
+        holder.createdUtcTime = post.getCreatedUtcTime();
+        holder.numComments = post.getNumComments();
+        holder.postTitleLarge = post.getPostTitleLarge();
+        holder.thumburl = post.getThumburl();
+        holder.userUrl = post.getUserUrl();
     }
 
     /*

@@ -144,8 +144,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
-//        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-//        getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
         super.onResume();
     }
 
@@ -314,13 +312,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void OnPostItemClick(String subname, String postId) {
+    public void OnPostItemClick(MainPost post) {
 
         Intent intent = new Intent(this, DetailActivity.class);
+
         Bundle args = new Bundle();
-        args.putString("SUB", subname);
-        args.putString("POID", postId);
-        intent.putExtra("BUNDLE", args);
+        args.putParcelable(DetailFragment.PARCEL_ON_ARG, post);
+
+        intent.putExtra(DetailFragment.EXTRA_ON_INTENT, args);
+
         startActivity(intent);
     }
 }

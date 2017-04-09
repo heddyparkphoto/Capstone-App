@@ -1,6 +1,7 @@
 package com.is.was.be.wannareddit.service;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -14,7 +15,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -44,26 +44,25 @@ public class FetchDetailAsyncTask extends AsyncTask <String, Void, ArrayList<Str
 
         String subreddit = args[0];
         String postId = args[1];
-        final String COMMENTS_BASE_STRING = "https://www.reddit.com/r/";
-        final String COMMENTS = "comments";
-        final String ENDING_BASE_STRING = ".json";
 
-        StringBuilder urlStringBuilder = new StringBuilder(COMMENTS_BASE_STRING);
-//        urlStringBuilder.append("https://www.reddit.com/r/todayilearned/comments/63bx3b.json");
-        urlStringBuilder.append(subreddit).append("/").append(COMMENTS).append("/").append(postId).append(ENDING_BASE_STRING);
+        // completed url example: "https://www.reddit.com/r/todayilearned/comments/63bx3b.json"
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("https")
+                .authority("www.reddit.com")
+                .appendPath("r")
+                .appendPath(subreddit)
+                .appendPath("comments")
+                .appendPath(postId.concat(".json"));
 
-        Log.d(TAG, "VERIFY: "+urlStringBuilder.toString());
+        Log.d(TAG, "new 2 VERIFY: "+ builder.build().toString());
 
-        String returnStr = null;
         String getResponse;
 
         JSONObject jsonObject = null;
         JSONArray jsonArray = null;
 
-        URL url;
         try {
-            url = new URL(urlStringBuilder.toString());
-            getResponse = fetchData(urlStringBuilder.toString());
+            getResponse = fetchData(builder.build().toString());
             jsonArray = new JSONArray(getResponse);
 
         } catch (MalformedURLException e){
@@ -81,8 +80,6 @@ public class FetchDetailAsyncTask extends AsyncTask <String, Void, ArrayList<Str
     public static ArrayList<String> parseDetailData(JSONArray jo){
         ArrayList<String> returnList = null;
 
-        JSONObject one;
-
         if (jo.length() != 2){
             Log.e(TAG, "Unexpected response.  Cannot find details for the post.");
             return null;
@@ -92,8 +89,8 @@ public class FetchDetailAsyncTask extends AsyncTask <String, Void, ArrayList<Str
             JSONObject postObj = (JSONObject)jo.get(1);
 
             if (postObj.getJSONObject("data")!=null){
-                JSONObject pOb = postObj.getJSONObject("data");
-                JSONArray dataArr = pOb.getJSONArray("children");
+                JSONObject dOb = postObj.getJSONObject("data");
+                JSONArray dataArr = dOb.getJSONArray("children");
 
                 if (dataArr!=null) {
                     int total = dataArr.length();
@@ -110,15 +107,12 @@ public class FetchDetailAsyncTask extends AsyncTask <String, Void, ArrayList<Str
                             if (!"t1".equalsIgnoreCase(kindType)) {
                                 continue;
                             }
-                            JSONObject commentObj = postJo.getJSONObject("data");
 
-//                            JSONObject comment = commentObj.getJSONObject("body");
-//                            String aComment = commentObj.getJSONObject("body").toString();
+                            JSONObject commentObj = postJo.getJSONObject("data");
                             String aComment = commentObj.getString("body");
-//                            if (aComment!=null){
-//                                aComment = aCommentObj.toString();
-//                            }
-                            aComment += " created utc " + commentObj.getLong("created_utc");
+                            // Later in the view, |created_utc| value will be tokenized and becomes the time line of this comment
+                            aComment += "|created_utc|" + commentObj.getLong("created_utc");
+
                             returnList.add(aComment);
                         }
                     }
@@ -130,6 +124,5 @@ public class FetchDetailAsyncTask extends AsyncTask <String, Void, ArrayList<Str
         } finally {
             return returnList;
         }
-
     }
 }

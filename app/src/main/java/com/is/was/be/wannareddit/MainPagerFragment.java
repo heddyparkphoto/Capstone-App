@@ -77,9 +77,18 @@ public class MainPagerFragment extends Fragment {
                     public void handleOnClick(String subname, String postId, PostAdapter.PostViewHolder passedIn) {
 
                         if (passedIn!=null) {
-                            String subR = passedIn.subname;
-                            String psId = passedIn.postId;
-                            ((OnPostItemSelectedListener) getActivity()).OnPostItemClick(subR, psId);
+                            // Create the parceleable MainPost
+                            MainPost post = new MainPost();
+                            post.setPostId(passedIn.postId);
+                            post.setPostSubreddit(passedIn.subname);
+                            post.setAuthor(passedIn.author);
+                            post.setCreatedUtcTime(passedIn.createdUtcTime);
+                            post.setNumComments(passedIn.numComments);
+                            post.setPostTitleLarge(passedIn.postTitleLarge);
+                            post.setThumburl(passedIn.thumburl);
+                            post.setUserUrl(passedIn.userUrl);
+
+                            ((OnPostItemSelectedListener) getActivity()).OnPostItemClick(post);
                         } else {
                             Log.e(TAG, "Clicked post was null.  Nothing to do.");
                         }
@@ -110,7 +119,7 @@ public class MainPagerFragment extends Fragment {
         }
 
         try {
-//            posts = ((FetchPostAsyncTask) new FetchPostAsyncTask().execute("todayilearned", mCategory)).get();
+
             posts = ((FetchPostAsyncTask) new FetchPostAsyncTask().execute(subnm, cat)).get();
 
         } catch (InterruptedException | ExecutionException e){
@@ -125,7 +134,7 @@ public class MainPagerFragment extends Fragment {
         /*
             DetailFragment Callback when an item is selected
          */
-        public void OnPostItemClick(String subname, String postId);
+        public void OnPostItemClick(MainPost passinPost);
 
     }
 }
