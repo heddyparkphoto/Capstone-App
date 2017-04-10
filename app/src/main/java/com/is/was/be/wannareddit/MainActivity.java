@@ -1,6 +1,7 @@
 package com.is.was.be.wannareddit;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -35,15 +36,20 @@ import com.google.android.gms.common.api.Status;
 import com.is.was.be.wannareddit.data.ForRedditProvider;
 import com.is.was.be.wannareddit.data.ListColumns;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class MainActivity extends AppCompatActivity
         implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<Status>,
         LoaderManager.LoaderCallbacks<Cursor>,
-        MainPagerFragment.OnPostItemSelectedListener
+        MainPagerFragment.OnPostItemSelectedListener,
+        SharedPreferences.OnSharedPreferenceChangeListener
 {
     private final static String TAG = MainActivity.class.getSimpleName();
 
@@ -70,6 +76,8 @@ public class MainActivity extends AppCompatActivity
     private SimpleCursorAdapter mAdapter;
     private Cursor mCursor;
     public String mCurrentSubredditChoice;
+    private ArrayList<String> mSpinnerList;
+    private int mSpinnerIdx;
 
 
     @Override
@@ -96,18 +104,19 @@ public class MainActivity extends AppCompatActivity
         // initialize to set the mAdapter to our spinner
         loadSpinner();
 
+        placeSubredditCurrent();
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Set up the ViewPager with the sections adapter.
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-       buildMyAwarenessGclient();
+        buildMyAwarenessGclient();
 
-    checkPlayServices();
+        checkPlayServices();
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -152,7 +161,27 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
+
+        SharedPreferences shared = getDefaultSharedPreferences(this);
+        shared.registerOnSharedPreferenceChangeListener(this);
+
+        // STILL PROBLEM - WE DON'T WANT TO CHANGE if user is reading another subreddit when the device rotated
+        // FIX LATER!!!
+        placeSubredditCurrent();
         super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(this);
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+
+        super.onPause();
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        mCurrentSubredditChoice = sharedPreferences.getString(getString(R.string.pref_subrdd_key), "DEFAULT");
     }
 
     @Override
@@ -257,18 +286,43 @@ public class MainActivity extends AppCompatActivity
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                    mCurrentSubredditChoice = ((TextView) view).getText().toString();
+                mCurrentSubredditChoice = ((TextView) view).getText().toString();
 //                Toast.makeText(getApplicationContext(), mCurrentSubredditChoice, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
 
         spinner.setAdapter(mAdapter);
+
     }
+
+    private void placeSubredditCurrent(){
+
+        SharedPreferences shared = getDefaultSharedPreferences(this);
+
+        if (shared!=null) {
+            String combinedPref = shared.getString(getString(R.string.pref_subrdd_key), "DEFAULT");
+            int pos = combinedPref.indexOf("|");
+            String prefSub = "";
+            if (pos > 0) {
+                prefSub = combinedPref.substring(0, pos);
+                try {
+                    mSpinnerIdx = Integer.parseInt(combinedPref.substring(pos + 1));
+                } catch (NumberFormatException e) {
+
+                }
+            }
+            mCurrentSubredditChoice = prefSub;
+        }
+
+        if (spinner!=null && mSpinnerIdx > -1){
+            spinner.setSelection(mSpinnerIdx);
+        }
+    }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

@@ -2,6 +2,7 @@ package com.is.was.be.wannareddit;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -135,8 +136,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             post = mPostList.get(position);
         }
         holder.postTextView.setText(post.getPostTitleLarge());
-        // image
-        Picasso.with(mContext).load(post.getThumburl()).into(holder.thumbnailView);
+        if (post.getThumburl()!=null && !post.getThumburl().isEmpty()) {
+            // image
+            Picasso.with(mContext).load(post.getThumburl()).into(holder.thumbnailView);
+        } else {
+            Log.w(TAG, "No thumb image url this post!");
+        }
         holder.postId = post.getPostId();
         holder.subname = post.getPostSubreddit();
         holder.author = post.getAuthor();
