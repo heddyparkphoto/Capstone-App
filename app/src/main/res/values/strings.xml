@@ -25,4 +25,10 @@
         <item>andanother</item>
         <item>prettygifs</item>
     </string-array>
+
+    <!--Widget support-->
+    <string name="a11y_post_widget">I am a wannareddit post</string>
+    <string name="title_widget">Wannareddit</string>
+    <string name="default_post_text">WannaReddit post -- find interesting stuff for me on my subreddit and on my tab</string>
+
 </resources>

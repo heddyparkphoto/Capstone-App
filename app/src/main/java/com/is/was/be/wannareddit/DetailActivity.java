@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 
 public class DetailActivity extends AppCompatActivity {
     private static final String LOG_TAG = DetailActivity.class.getSimpleName();
+    public static final String SUBNAME = "SUBNAME";
+    public static final String POSTID = "POSTID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widget_one_id"
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:paddingRight="@dimen/widget_margin"
+    android:paddingEnd="@dimen/widget_margin"
+    android:gravity="start|center_vertical"
+    tools:text="@string/default_post_text"
+    android:contentDescription="@string/default_post_text"
+    />

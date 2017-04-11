@@ -1,12 +1,18 @@
 package com.is.was.be.wannareddit;
 
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -19,6 +25,7 @@ import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,13 +35,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.awareness.Awareness;
+import com.google.android.gms.awareness.fence.AwarenessFence;
+import com.google.android.gms.awareness.fence.FenceState;
+import com.google.android.gms.awareness.fence.FenceUpdateRequest;
+import com.google.android.gms.awareness.fence.TimeFence;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.ResultCallbacks;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.gcm.GcmNetworkManager;
+import com.google.android.gms.gcm.PeriodicTask;
+import com.is.was.be.wannareddit.data.DataUtility;
 import com.is.was.be.wannareddit.data.ForRedditProvider;
 import com.is.was.be.wannareddit.data.ListColumns;
+import com.is.was.be.wannareddit.service.WannaTaskService;
 
 import java.util.ArrayList;
 
@@ -56,7 +72,13 @@ public class MainActivity extends AppCompatActivity
     // Play service variables
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     protected GoogleApiClient mGoogleApiClient;
+    // Declare variables for pending intent and fence receiver.
+    private final static String FENCE_RECIEVER_ACTION = "FENCE_RECIEVER_ACTION";
+    private PendingIntent myPendingIntent;
+    private MyFenceReceiver myFenceReceiver;
+    AwarenessFence mTimeFence;
 
+    @BindView(R2.id.main_content) CoordinatorLayout mCoorLayout;
     @BindView(R2.id.toolbar) Toolbar toolbar;
     @BindView(R2.id.interpolator_spinner) Spinner spinner;
     @BindView(R2.id.container) ViewPager mViewPager;   //The {@link ViewPager} that will host the section contents.
@@ -114,7 +136,37 @@ public class MainActivity extends AppCompatActivity
 
         buildMyAwarenessGclient();
 
-        checkPlayServices();
+        // Schedule Periodic Task for Widgets (requires user settings of subreddit and
+        // category from the SharedPreferences)
+        // for now we'll hard-code test values
+        Bundle bundle = new Bundle();
+        bundle.putString(DataUtility.SRDD_PARAM, "explainlikeimfive");
+        bundle.putString(DataUtility.CATEG_PARAM, "hot");
+
+        PeriodicTask periodicTask = new PeriodicTask.Builder()
+                .setService(WannaTaskService.class)
+                .setExtras(bundle)
+                .setUpdateCurrent(true)     // Read that this true ensures task is built if there's none
+                .setFlex(10L)
+                .setPeriod(3600L)           // once per hour 60min*60sec = 3600 long type - test with 30L
+                .setTag(DataUtility.PERIODIC_TAG)
+                .build();
+        if (checkPlayServices()) {
+            GcmNetworkManager.getInstance(this).schedule(periodicTask);
+            // and run once right away
+        }
+
+        // instantiate variables for AwarenessFence api
+        Intent intent = new Intent(FENCE_RECIEVER_ACTION);
+        myPendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        myFenceReceiver = new MyFenceReceiver();
+        registerReceiver(myFenceReceiver, new IntentFilter(FENCE_RECIEVER_ACTION));
+
+        // Googleclient builder build - must connect in onStart()
+        buildMyAwarenessGclient();
+        // Instantiate AwarenssFences
+        buildMyAwarenessFence();
+
 
     }
 
@@ -168,6 +220,8 @@ public class MainActivity extends AppCompatActivity
         // STILL PROBLEM - WE DON'T WANT TO CHANGE if user is reading another subreddit when the device rotated
         // FIX LATER!!!
         placeSubredditCurrent();
+
+        registerFence("timeFenceKey");
         super.onResume();
     }
 
@@ -176,6 +230,7 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(this);
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
 
+        unregisterFence("timeFenceKey");
         super.onPause();
     }
 
@@ -385,4 +440,89 @@ public class MainActivity extends AppCompatActivity
 
         startActivity(intent);
     }
+
+    /*
+        Google Play Service - If user opts in a time aware reminder
+        this receiver does the job
+     */
+    public class MyFenceReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            FenceState fenceState = FenceState.extract(intent);
+
+            if (TextUtils.equals(fenceState.getFenceKey(), "timeFenceKey")) {
+                switch (fenceState.getCurrentState()) {
+                    case FenceState.TRUE:
+                        Log.i(TAG, "TimeFence passe 1 minite.");
+                        Snackbar mSnackbar = Snackbar.make(mCoorLayout,
+                                "TimeFence passe 4 minite.", Snackbar.LENGTH_LONG);
+                        mSnackbar.setAction("OK",
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        unregisterFence("timeFenceKey");
+                                    }
+                                });
+                        mSnackbar.show();
+                        buildMyAwarenessFence();    // repeat
+                        break;
+                    case FenceState.FALSE:
+                        Log.i(TAG, "TimeFence not yet 1 munite.");
+                        break;
+                    case FenceState.UNKNOWN:
+                        Log.i(TAG, "The TimeFence fence is in an unknown state.");
+                        break;
+                }
+            }
+
+        }
+    }
+
+    protected void buildMyAwarenessFence() {
+        long nowMillis = System.currentTimeMillis();
+        long oneHourMillis = 1L * 60L * 60L * 1000L;
+        long oneMinuteMillis = 4L * 60L * 1000L;
+
+        mTimeFence = TimeFence.inInterval(nowMillis + oneMinuteMillis, Long.MAX_VALUE);
+    }
+
+
+    private void registerFence(final String keyname) {
+        Awareness.FenceApi.updateFences(
+                mGoogleApiClient,
+                new FenceUpdateRequest.Builder()
+                        .addFence(keyname, mTimeFence, myPendingIntent)
+                        .build()).setResultCallback(new ResultCallback<Status>() {
+            @Override
+            public void onResult(@NonNull Status status) {
+                if (status.isSuccess()){
+                    Log.i(TAG, "Fence successfully registered.");
+                } else {
+                    Log.i(TAG, "Fence could not be registered. " + status);
+                }
+            }
+        });
+    }
+
+    protected void unregisterFence(final String fenceKey) {
+        Awareness.FenceApi.updateFences(
+                mGoogleApiClient,
+                new FenceUpdateRequest.Builder()
+                        .removeFence(fenceKey)
+                        .build()).setResultCallback(new ResultCallbacks<Status>() {
+            @Override
+            public void onSuccess(@NonNull Status status) {
+                Log.i(TAG, "Fence " + fenceKey + " successfully removed.");
+            }
+
+            @Override
+            public void onFailure(@NonNull Status status) {
+                Log.i(TAG, "Fence " + fenceKey + " could NOT be removed.");
+            }
+        });
+    }
+
+
+
 }
