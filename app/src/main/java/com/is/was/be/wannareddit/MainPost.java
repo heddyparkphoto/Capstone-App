@@ -25,7 +25,7 @@ public class MainPost implements Parcelable {
     String thumburl;
     String userUrl;   // "url" for now sometimes a website, sometimes a media seems to play in the Web browser.
 
-    int media;
+    int media;          // 1 if video can be played, -1 if not
 
     public MainPost(){
         super();

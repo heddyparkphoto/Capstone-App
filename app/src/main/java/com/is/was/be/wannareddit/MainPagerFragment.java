@@ -87,6 +87,7 @@ public class MainPagerFragment extends Fragment {
                             post.setPostTitleLarge(passedIn.postTitleLarge);
                             post.setThumburl(passedIn.thumburl);
                             post.setUserUrl(passedIn.userUrl);
+                            post.setMedia(passedIn.videoFlag);
 
                             ((OnPostItemSelectedListener) getActivity()).OnPostItemClick(post);
                         } else {

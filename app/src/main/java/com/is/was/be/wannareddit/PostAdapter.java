@@ -49,6 +49,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         String postTitleLarge;
         String thumburl;
         String userUrl;
+        int videoFlag;
 
         public PostViewHolder(View view) {
             super(view);
@@ -63,6 +64,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             postTitleLarge = "";
             thumburl = "";
             userUrl = "";
+            videoFlag = 1;
 
             // responsible for click event
             view.setOnClickListener(this);
@@ -150,6 +152,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.postTitleLarge = post.getPostTitleLarge();
         holder.thumburl = post.getThumburl();
         holder.userUrl = post.getUserUrl();
+        holder.videoFlag = post.getMedia();
     }
 
     /*

@@ -148,7 +148,7 @@ public class DetailFragment extends Fragment {
                         }
                     });
                 }
-                if (mFragPost.getMedia() ==0){
+                if (mFragPost.getMedia() ==1){
                     mediaButton.setVisibility(View.VISIBLE);
                     mediaButton.setOnClickListener(new View.OnClickListener() {
                         @Override
