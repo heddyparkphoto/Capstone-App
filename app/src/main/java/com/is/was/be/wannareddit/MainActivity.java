@@ -101,6 +101,10 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<String> mSpinnerList;
     private int mSpinnerIdx;
 
+    // Following codes added during Tablet Lesson
+    private static final String DETAILFRAGMENT_TAG = "DFTAG";
+    private boolean mTwoPane;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +131,43 @@ public class MainActivity extends AppCompatActivity
         loadSpinner();
 
         placeSubredditCurrent();
+
+
+
+        /*
+        &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+        Detail fragment
+         */
+
+        MainPost post=null;
+        if (getIntent()!=null) {
+
+            Intent intent = getIntent();
+            if (intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT) != null) {
+                Bundle bundle = intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT);
+                if (bundle.getParcelable(DetailFragment.PARCEL_ON_ARG) != null) {
+                    post = bundle.getParcelable(DetailFragment.PARCEL_ON_ARG);
+                }
+            }
+        }
+
+        if (findViewById(R.id.detailcontainer_fragment) != null){
+            mTwoPane = true;
+
+            if (savedInstanceState == null) {
+                DetailFragment df = new DetailFragment();
+                if (post != null){
+                    Bundle args = new Bundle();
+                    args.putParcelable((DetailFragment.PARCEL_ON_ARG), post);
+                    df.setArguments(args);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.detailcontainer_fragment, df, DETAILFRAGMENT_TAG)
+                        .commit();
+            }
+        } else {
+            mTwoPane = false;
+        }
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
