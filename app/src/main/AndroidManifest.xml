@@ -33,6 +33,15 @@
             android:theme="@style/DiaglogTheme">
         </activity>
         <activity android:name=".DetailActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <!-- Include the host attribute if you want your app to respond
+                     only to URLs with your app's domain. -->
+                <data android:scheme="http" android:host="com.is.was.be.wannareddit" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- The BROWSABLE category is required to get links from web pages. -->
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity">
         </activity>

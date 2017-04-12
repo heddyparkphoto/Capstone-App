@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.is.was.be.wannareddit.data.DataUtility;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -111,7 +112,17 @@ public class FetchDetailAsyncTask extends AsyncTask <String, Void, ArrayList<Str
                             JSONObject commentObj = postJo.getJSONObject("data");
                             String aComment = commentObj.getString("body");
                             // Later in the view, |created_utc| value will be tokenized and becomes the time line of this comment
-                            aComment += "|created_utc|" + commentObj.getLong("created_utc");
+
+                            long crUtc = commentObj.getLong("created_utc");
+                            long crLocal = commentObj.getLong("created");
+
+//                            DataUtility.convertToTimeAgo(crUtc, crLocal);
+//                            DataUtility.convertToDateFormat(crUtc);
+                            String dateStr = DataUtility.getDate(crUtc);
+
+                            aComment += " | created " + dateStr + " |";
+
+
 
                             returnList.add(aComment);
                         }

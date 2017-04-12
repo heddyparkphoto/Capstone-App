@@ -108,6 +108,19 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
                             po.setNumComments(one.getInt("num_comments"));
                             po.setThumburl(one.getString("thumbnail"));
                             po.setUserUrl(one.getString("url"));
+                            try {
+                                JSONObject mediaData = one.getJSONObject("media");
+                                JSONObject oembedObj = mediaData.getJSONObject("oembed");
+                                if (oembedObj.getString("type") != null &&
+                                        oembedObj.getString("type").equalsIgnoreCase("video")) {
+                                    po.setMedia(1);
+                                } else {
+                                    po.setMedia(-1);
+                                }
+                            } catch (JSONException ex){
+                                Log.e(TAG, "media parsing "+ ex);
+                                po.setMedia(-1);
+                            }
 
                             returnList.add(po);
                         }

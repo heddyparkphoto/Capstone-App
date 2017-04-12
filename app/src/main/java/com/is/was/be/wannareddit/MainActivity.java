@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity
                 .setUpdateCurrent(true)     // Read that this true ensures task is built if there's none
                 .setFlex(10L)
                 .setPeriod(3600L)           // once per hour 60min*60sec = 3600 long type - test with 30L
+//                .setPeriod(60L)           // TEST - one minute!!!
                 .setTag(DataUtility.PERIODIC_TAG)
                 .build();
         if (checkPlayServices()) {
@@ -251,6 +252,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
+
+//        unregisterReceiver(myFenceReceiver);      // Error "not registered"
 
         if (mGoogleApiClient!=null && mGoogleApiClient.isConnected()){
             mGoogleApiClient.disconnect();

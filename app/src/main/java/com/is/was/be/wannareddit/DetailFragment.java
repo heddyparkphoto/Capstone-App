@@ -1,6 +1,7 @@
 package com.is.was.be.wannareddit;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,11 +15,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.is.was.be.wannareddit.data.DataUtility;
 import com.is.was.be.wannareddit.service.FetchDetailAsyncTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+
+import static android.content.Intent.ACTION_VIEW;
 
 /**
  * Created by hyeryungpark on 4/7/17.
@@ -42,6 +46,9 @@ public class DetailFragment extends Fragment {
     ListView mListView;
     TextView mEmptyView;
     ImageButton mediaButton;
+    TextView timelineView;
+    TextView authorView;
+    TextView numberOfCommentsView;
 
     // Params needed for the details api - passed in by DetailActivity or MainActivity if Tablet
     String mSubrdd;
@@ -67,6 +74,9 @@ public class DetailFragment extends Fragment {
         mListView = (ListView) rootView.findViewById(R.id.listview_comments);
         mEmptyView= (TextView) rootView.findViewById(R.id.recyclerview_comments_empty);
         mediaButton= (ImageButton) rootView.findViewById(R.id.media_control);
+        timelineView = (TextView) rootView.findViewById(R.id.timeline);
+        authorView = (TextView) rootView.findViewById(R.id.author_by);
+        numberOfCommentsView = (TextView) rootView.findViewById(R.id.comments_num);
 
 //        ButterKnife.bind(getActivity());
 
@@ -112,20 +122,65 @@ public class DetailFragment extends Fragment {
 
             comments = ((FetchDetailAsyncTask) new FetchDetailAsyncTask().execute(mSubrdd, mPostId)).get();
 
-            if (null!=comments){
+            if (null != comments) {
                 mCommentAdapter = new ArrayAdapter<>(getActivity(), R.layout.one_comment);
             }
-            for (String c: comments){
+            for (String c : comments) {
                 mCommentAdapter.add(c);
             }
 
             mListView.setAdapter(mCommentAdapter);
-            if (mFragPost!=null) {
+            if (mFragPost != null) {
                 postTitle.setText(mFragPost.getPostTitleLarge());
-                if (mFragPost.getThumburl()!=null) {
+                if (mFragPost.getUserUrl() != null) {
+                    postTitle.setTextColor(getResources().getColor(R.color.wr_a400));
+                    postTitle.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Uri userPage = Uri.parse(mFragPost.getUserUrl());
+                            Intent intent = new Intent(ACTION_VIEW, userPage);
+                            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                                startActivity(intent);
+                            } else {
+                                Log.w(TAG, "No app found to open the site: " + mFragPost.getUserUrl());
+                            }
+
+                        }
+                    });
+                }
+                if (mFragPost.getMedia() ==0){
+                    mediaButton.setVisibility(View.VISIBLE);
+                    mediaButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Uri userPage = Uri.parse(mFragPost.getUserUrl());
+                            Intent intent = new Intent(ACTION_VIEW, userPage);
+                            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                                startActivity(intent);
+                            } else {
+                                Log.w(TAG, "No app found to open the site: " + mFragPost.getUserUrl());
+                            }
+
+                        }
+                    });
+                } else {
+                    mediaButton.setVisibility(View.INVISIBLE);
+                }
+
+                if (mFragPost.getThumburl() != null) {
                     Picasso.with(getActivity()).load(mFragPost.getThumburl()).into(postImage);
                 }
+
+                if (mFragPost.createdUtcTime != 0L) {
+                    timelineView.setText(DataUtility.getDate(mFragPost.createdUtcTime));
+                } else {
+                    timelineView.setText(Long.toString(mFragPost.createdUtcTime));
+                }
+
+                authorView.setText("by " + mFragPost.author);
+                numberOfCommentsView.setText(String.valueOf(mFragPost.numComments) + " Comments");
             }
+
         } catch (InterruptedException | ExecutionException e){
             Log.e(TAG, "" + e);
         }

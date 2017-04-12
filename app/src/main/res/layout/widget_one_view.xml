@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/widget_one_id"
     android:layout_width="match_parent"
-    android:layout_height="30dp"
-    android:paddingRight="@dimen/widget_margin"
-    android:paddingEnd="@dimen/widget_margin"
+    android:layout_height="36dp"
+    android:padding="@dimen/widget_margin"
+
     android:gravity="start|center_vertical"
     tools:text="@string/default_post_text"
     android:contentDescription="@string/default_post_text"

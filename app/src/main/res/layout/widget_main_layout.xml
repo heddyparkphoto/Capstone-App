@@ -20,7 +20,7 @@
     <ListView
         android:id="@+id/widget_id_list"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/widget_post_height"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:loopViews="true"
         tools:listitem="@layout/widget_one_view"

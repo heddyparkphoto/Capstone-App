@@ -83,7 +83,19 @@ public class WannaTaskService extends GcmTaskService {
 //        urlStringBuilder.append("https://www.reddit.com/r/todayilearned/new.json?limit=3&over_18=true");   //did not filter anything
 
 //        urlStringBuilder.append("https://www.reddit.com/r/todayilearned/hot.json?limit=5");
+/*
+   &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+   LET'S EXPERIMENT - home widget should change a bit more than just one category,so
+
         urlStringBuilder.append("https://www.reddit.com/r/").append(r).append("/").append(c).append(".json?limit=20");
+
+  */
+        /*
+           try mimicing the reddit.com
+            default seems to me: bringing 'hot' posts from any categories...
+         */
+        urlStringBuilder.append("https://www.reddit.com/hot.json?limit=25");
+
         Log.v(TAG, "STRING verify: "+urlStringBuilder.toString());
 
         String urlString;
@@ -99,7 +111,7 @@ public class WannaTaskService extends GcmTaskService {
                 getResponse = fetchData(urlString);
                 result = GcmNetworkManager.RESULT_SUCCESS;
 
-                Log.d(TAG, getResponse);
+//                Log.d(TAG, getResponse);
                 jsonObject = new JSONObject(getResponse);
 
                 ArrayList dbOperationList = DataUtility.widgetJsonToContentVals(jsonObject, r);

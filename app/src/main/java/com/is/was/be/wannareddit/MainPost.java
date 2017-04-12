@@ -25,6 +25,8 @@ public class MainPost implements Parcelable {
     String thumburl;
     String userUrl;   // "url" for now sometimes a website, sometimes a media seems to play in the Web browser.
 
+    int media;
+
     public MainPost(){
         super();
     }
@@ -45,6 +47,7 @@ public class MainPost implements Parcelable {
         // for more
         thumburl = in.readString();
         userUrl = in.readString();
+        media = in.readInt();
     }
 
     public static final Creator<MainPost> CREATOR = new Creator<MainPost>() {
@@ -123,6 +126,14 @@ public class MainPost implements Parcelable {
         this.userUrl = userUrl;
     }
 
+    public int getMedia() {
+        return media;
+    }
+
+    public void setMedia(int media) {
+        this.media = media;
+    }
+
     @Override
     public String toString(){
         return postTitleLarge;
@@ -147,6 +158,6 @@ public class MainPost implements Parcelable {
         parcel.writeString(thumburl);
         parcel.writeString(userUrl);
 
-
+        parcel.writeInt(media);
     }
 }
