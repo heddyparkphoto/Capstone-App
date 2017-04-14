@@ -153,18 +153,18 @@ public class MainActivity extends AppCompatActivity
 
         if (findViewById(R.id.detailcontainer_fragment) != null){
             mTwoPane = true;
-
-            if (savedInstanceState == null) {
-                DetailFragment df = new DetailFragment();
-                if (post != null){
-                    Bundle args = new Bundle();
-                    args.putParcelable((DetailFragment.PARCEL_ON_ARG), post);
-                    df.setArguments(args);
-                }
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.detailcontainer_fragment, df, DETAILFRAGMENT_TAG)
-                        .commit();
-            }
+//
+//            if (savedInstanceState == null) {
+//                DetailFragment df = new DetailFragment();
+//                if (post != null){
+//                    Bundle args = new Bundle();
+//                    args.putParcelable((DetailFragment.PARCEL_ON_ARG), post);
+//                    df.setArguments(args);
+//                }
+//                getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.detailcontainer_fragment, df, DETAILFRAGMENT_TAG)
+//                        .commit();
+//            }
         } else {
             mTwoPane = false;
         }
