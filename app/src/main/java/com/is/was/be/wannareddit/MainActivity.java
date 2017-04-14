@@ -475,14 +475,26 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void OnPostItemClick(MainPost post) {
 
-        Intent intent = new Intent(this, DetailActivity.class);
+        if (mTwoPane){
+            Bundle args = new Bundle();
+            args.putParcelable(DetailFragment.PARCEL_ON_ARG, post);
 
-        Bundle args = new Bundle();
-        args.putParcelable(DetailFragment.PARCEL_ON_ARG, post);
+            DetailFragment df = new DetailFragment();
+            df.setArguments(args);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.detailcontainer_fragment, df, DETAILFRAGMENT_TAG)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, DetailActivity.class);
 
-        intent.putExtra(DetailFragment.EXTRA_ON_INTENT, args);
+            Bundle args = new Bundle();
+            args.putParcelable(DetailFragment.PARCEL_ON_ARG, post);
 
-        startActivity(intent);
+            intent.putExtra(DetailFragment.EXTRA_ON_INTENT, args);
+
+            startActivity(intent);
+        }
     }
 
     /*

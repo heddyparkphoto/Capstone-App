@@ -50,6 +50,10 @@ public class DetailFragment extends Fragment {
     TextView authorView;
     TextView numberOfCommentsView;
 
+    // Animation var
+//    FrameLayout mScrollingFrm;
+//    LinearLayout mOffLayout;
+
     // Params needed for the details api - passed in by DetailActivity or MainActivity if Tablet
     String mSubrdd;
     String mPostId;
@@ -78,7 +82,58 @@ public class DetailFragment extends Fragment {
         authorView = (TextView) rootView.findViewById(R.id.author_by);
         numberOfCommentsView = (TextView) rootView.findViewById(R.id.comments_num);
 
+        //&&&&&&&&&&&&&&&&&&&&&&&&&&
+//        mScrollingFrm = (FrameLayout) rootView.findViewById(R.id.scrolling_frameL);
+//        mOffLayout = (LinearLayout) rootView.findViewById(R.id.off_view);
+
+
 //        ButterKnife.bind(getActivity());
+
+//        if (mScrollingFrm!=null) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // Solution video has this line
+//
+//                mListView.setOnScrollListener(new ListView.OnScrollListener() {
+//
+//                    @Override
+//                    public void onScrollStateChanged(AbsListView absListView, int scrollMotion) {
+//
+//                        if (SCROLL_STATE_TOUCH_SCROLL==scrollMotion) {
+//                            float barTransY = mScrollingFrm.getTranslationY();
+//                            int barMax = mScrollingFrm.getHeight(); // handle 0 as a max TranslationY
+//                            int topPortionHeight = 400;     // We know this is the height of the top part that can be used
+//                            float barY;
+//                            if (barMax > 200) {
+//                                barY = 200;
+////                                barY = Math.max(-barMax, barTransY - dy / 2);
+//                            } else {
+////                                barY = Math.min(0, barTransY - dy / 2);
+//                                barY = 100;
+//                            }
+//
+//                            final int startScrollPos = 300; //400;
+////                                    getResources().getDimensionPixelSize("100dp");
+////                                            R.dimen.init_scroll_up_distance);
+//                            Animator animator = ObjectAnimator.ofInt(
+////                                    mListView,
+////                                    mScrollingFrm,
+//                                    mOffLayout,
+//                                    "scrollY",
+//                                    startScrollPos
+//                            ).setDuration(300);
+//
+//                            animator.start();
+////                            mScrollingFrm.setTranslationY(barY);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+//                        Log.d(TAG, "debug stop");
+//                    }
+//
+//                });
+//            }
+//        }
 
 
         Intent intent = getActivity().getIntent();
@@ -112,6 +167,8 @@ public class DetailFragment extends Fragment {
 
         return rootView;
     }
+
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
