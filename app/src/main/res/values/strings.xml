@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Wannareddit</string>
+    <string name="app_name" translatable="false">Wannareddit</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="action_add">ADD</string>
@@ -15,16 +15,20 @@
     <string name="playMedia">Play media</string>
     <string name="comment_filler_text">This is a the post\'s comment place holder.  Please wait until we fetch the real ones.</string>
 
+    <string name="title_add_srddt" translatable="false">Add Another Subreddit</string>
+    <string name="content_add_srddt" translatable="false">New name to add</string>
+    <string name="hint_add_srddt" translatable="false">askreddit</string>
+
     <!--Preferences-->
     <string name="pref_subrdd_screentitle">Favorite Subreddit</string>
     <string name="default_subreddit">Shutupandtakemymoney</string>
-    <string name="pref_subrdd_key">pref_subrdd_key</string>
+    <string name="pref_subrdd_key" translatable="false">pref_subrdd_key</string>
     <string name="pref_timefence_screentitle">Remind Me After Time Spent</string>
-    <string name="default_timefence">2</string>
-    <string name="pref_timefence_key">pref_timefence_key</string>
+    <string name="default_timefence" translatable="false">2</string>
+    <string name="pref_timefence_key" translatable="false">pref_timefence_key</string>
 
 
-    <string-array name="interpolators">
+    <string-array name="interpolators" translatable="false">
         <item>Shutupandtakemymoney</item>
         <item>askreddit</item>
         <item>todayilearned</item>
@@ -35,7 +39,16 @@
 
     <!--Widget support-->
     <string name="a11y_post_widget">I am a wannareddit post</string>
-    <string name="title_widget">Wannareddit</string>
+    <string name="title_widget" translatable="false">Wannareddit</string>
     <string name="default_post_text">WannaReddit post -- find interesting stuff for me on my subreddit and on my tab</string>
+
+    <!--A11y support-->
+    <string name="a11y_add_srddt">Add new subreddit</string>
+    <string name="a11y_activity_srddt">Add or remove subreddits</string>
+    <string name="a11y_action_add">Subreddits Menu</string>
+    <string name="a11y_add_success">Added %s successfully</string>
+    <string name="a11y_dupe_noadd">Subreddit %s already exists</string>
+    <string name="a11y_remove_srddt">Remove this subreddit</string>
+    <string name="a11y_remove_confirm">Removed %s successfully</string>
 
 </resources>

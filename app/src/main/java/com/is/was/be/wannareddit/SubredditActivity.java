@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,18 +26,31 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.is.was.be.wannareddit.data.ForRedditProvider;
 import com.is.was.be.wannareddit.data.ListColumns;
 
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.is.was.be.wannareddit.data.ListColumns.SUBREDDITNAME;
 
 public class SubredditActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>
 {
 
-    private RecyclerView mRecylerView;
     private SubredditAdapter mSubAdapter;
     private static final int LOADER_ID = 30;
-    private FloatingActionButton mFab;
 
     protected Context mContext;
+
+    @BindView(R2.id.fab) FloatingActionButton mFab;
+    @BindView(R2.id.recyclerview_subreddit_empty) TextView emptyTxtView;
+    @BindView(R2.id.recyclerview_subreddit) RecyclerView mRecylerView;
+
+    @BindString(R2.string.a11y_add_success) String addSuccessMsgIncomplete;
+    @BindString(R2.string.a11y_dupe_noadd) String dupeMsgIncomplete;
+    @BindString(R2.string.title_add_srddt) String strRscTitle;
+    @BindString(R2.string.content_add_srddt) String strRscContent;
+    @BindString(R2.string.hint_add_srddt) String strRscHint;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,28 +58,28 @@ public class SubredditActivity extends AppCompatActivity
         setContentView(R.layout.activity_subreddit);
         mContext = this;
 
+        ButterKnife.bind(this);
+
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
-        mSubAdapter = new SubredditAdapter(this, (TextView) findViewById(R.id.recyclerview_subreddit_empty));
-        mRecylerView = (RecyclerView) findViewById(R.id.recyclerview_subreddit);
+        mSubAdapter = new SubredditAdapter(this, emptyTxtView);
         mRecylerView.setLayoutManager(new LinearLayoutManager(this));
         mRecylerView.setAdapter(mSubAdapter);
 
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new MaterialDialog.Builder(mContext).title("Add Another Subreddit")
-                        .content("Add Another Subreddit Content!!")
+                new MaterialDialog.Builder(mContext).title(strRscTitle)
+                        .content(strRscContent)
                         .inputType(InputType.TYPE_CLASS_TEXT)
-                        .input("askreddit", "", new MaterialDialog.InputCallback() {
+                        .input(strRscHint, "", new MaterialDialog.InputCallback() {
                             @Override
                             public void onInput(MaterialDialog dialog, CharSequence input) {
-
-                                Toast.makeText(mContext, "INPUT worked.", Toast.LENGTH_SHORT).show();
+                                String confirmStr = String.format(addSuccessMsgIncomplete, input.toString());
+                                Toast.makeText(mContext, confirmStr, Toast.LENGTH_SHORT).show();
 //                                // Receive user input. Make sure the subreddit doesn't already exist
 //                                // in the DB and proceed accordingly - our DB is case-sensitive we'll keep as user types in
 //                                // keep duplicates as well - it won't be a huge collection anyhow - they're not case-sensitive on reddit
@@ -74,9 +88,9 @@ public class SubredditActivity extends AppCompatActivity
                                         new String[]{ListColumns.SUBREDDITNAME}, ListColumns.SUBREDDITNAME + "= ?",
                                         new String[]{input.toString()}, null);
                                 if (c.getCount() != 0) {
+                                    String dupeStr = String.format(dupeMsgIncomplete, input.toString());
                                     Toast toast =
-                                            Toast.makeText(mContext, "This subreddit is already saved!",
-                                                    Toast.LENGTH_SHORT);
+                                            Toast.makeText(mContext, dupeStr, Toast.LENGTH_SHORT);
                                     toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                                     toast.show();
 
@@ -168,14 +182,17 @@ public class SubredditActivity extends AppCompatActivity
                 rmButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        String rmConfStr = String.format(getResources().getString(R.string.a11y_remove_confirm), nameView.getText().toString());
                         // get the subreddit name from this passedin button's accompanying nameView.getText()
                         int checksum = mContext.getContentResolver().delete(
                                 ForRedditProvider.MainContract.CONTENT_URI,
                                 " " + SUBREDDITNAME + "=?", new String[]{nameView.getText().toString()}
                                 );
-                        Toast.makeText(mContext, "Deleted how many? " + checksum, Toast.LENGTH_SHORT)
-                                .show();
+                        if (checksum==1) {
+                            Toast.makeText(mContext, rmConfStr, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.e(TAG, "Remove Db error-Deleted row num returned: "+checksum);
+                        }
                     }
                 });
             }

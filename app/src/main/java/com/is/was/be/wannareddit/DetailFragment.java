@@ -137,7 +137,7 @@ public class DetailFragment extends Fragment {
 
 
         Intent intent = getActivity().getIntent();
-        if (null != intent) {
+        if (null != intent && intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT) != null) {
             if (intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT) != null) {
                 Bundle bundle = intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT);
                 if (bundle.getParcelable(DetailFragment.PARCEL_ON_ARG) != null) {

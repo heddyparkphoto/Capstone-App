@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.is.was.be.wannareddit.SubredditActivity">
+    tools:context="com.is.was.be.wannareddit.SubredditActivity"
+    >
 
     <include layout="@layout/content_subreddit" />
 
@@ -16,6 +17,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_add_black_24dp"/>
+        app:srcCompat="@drawable/ic_add_black_24dp"
+        android:contentDescription="@string/a11y_add_srddt"
+        />
 
 </android.support.design.widget.CoordinatorLayout>
