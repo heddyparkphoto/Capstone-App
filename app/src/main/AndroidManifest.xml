@@ -32,7 +32,7 @@
             android:name=".SubredditActivity"
             android:theme="@style/DiaglogTheme">
         </activity>
-        <activity android:name=".DetailActivity">
+        <activity android:name=".DetailActivity" android:parentActivityName=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <!-- Include the host attribute if you want your app to respond
@@ -43,7 +43,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:name=".SettingsActivity">
+        <activity android:name=".SettingsActivity" >
         </activity>
 
         <service

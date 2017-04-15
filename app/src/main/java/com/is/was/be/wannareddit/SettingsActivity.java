@@ -133,6 +133,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // updated to reflect the new value, per the Android Design
             // guidelines.
             bindPreferenceToValue(localPref);
+            // TimeFence Preference
+            ListPreference tfPref = (ListPreference) findPreference(getString(R.string.pref_timefence_key));
+            bindPreferenceToValue(tfPref);
         }
 
         @Override

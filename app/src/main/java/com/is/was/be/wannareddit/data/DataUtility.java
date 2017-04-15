@@ -1,7 +1,11 @@
 package com.is.was.be.wannareddit.data;
 
 import android.content.ContentProviderOperation;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
+
+import com.is.was.be.wannareddit.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 /**
  * Created by hyeryungpark on 4/10/17.
@@ -115,5 +121,19 @@ public class DataUtility {
 
         Log.d(TAG, "utc "+ utcMillis + " our date " + str);
         return formatter.format(calendar.getTime());
+    }
+
+    public static long getTimeFencingTimePreference(Context context){
+
+        String tfPreference;
+        SharedPreferences shared = getDefaultSharedPreferences(context);
+        if (shared!=null) {
+            tfPreference = shared.getString(context.getString(R.string.pref_timefence_key),
+                                            context.getString(R.string.default_timefence));
+        } else {
+          tfPreference = context.getString(R.string.default_timefence);
+        }
+
+        return Long.parseLong(tfPreference);
     }
 }

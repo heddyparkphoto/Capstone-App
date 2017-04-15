@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity
     private PendingIntent myPendingIntent;
     private MyFenceReceiver myFenceReceiver;
     AwarenessFence mTimeFence;
+    private long mPrefTimeFenceMinutes;
 
     @BindView(R2.id.main_content) CoordinatorLayout mCoorLayout;
     @BindView(R2.id.toolbar) Toolbar toolbar;
@@ -153,18 +154,18 @@ public class MainActivity extends AppCompatActivity
 
         if (findViewById(R.id.detailcontainer_fragment) != null){
             mTwoPane = true;
-//
-//            if (savedInstanceState == null) {
-//                DetailFragment df = new DetailFragment();
-//                if (post != null){
-//                    Bundle args = new Bundle();
-//                    args.putParcelable((DetailFragment.PARCEL_ON_ARG), post);
-//                    df.setArguments(args);
-//                }
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.detailcontainer_fragment, df, DETAILFRAGMENT_TAG)
-//                        .commit();
-//            }
+
+            if (savedInstanceState == null) {
+                DetailFragment df = new DetailFragment();
+                if (post != null){
+                    Bundle args = new Bundle();
+                    args.putParcelable((DetailFragment.PARCEL_ON_ARG), post);
+                    df.setArguments(args);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.detailcontainer_fragment, df, DETAILFRAGMENT_TAG)
+                        .commit();
+            }
         } else {
             mTwoPane = false;
         }
@@ -263,7 +264,9 @@ public class MainActivity extends AppCompatActivity
         // FIX LATER!!!
         placeSubredditCurrent();
 
-        registerFence("timeFenceKey");
+        if (mPrefTimeFenceMinutes < 999L) {
+            registerFence("timeFenceKey");
+        }
         super.onResume();
     }
 
@@ -294,7 +297,11 @@ public class MainActivity extends AppCompatActivity
     protected void onStop() {
         super.onStop();
 
-//        unregisterReceiver(myFenceReceiver);      // Error "not registered"
+        try {
+            unregisterReceiver(myFenceReceiver);      // Error "not registered"
+        } catch (Exception allEx){
+            Log.e(TAG, ""+ allEx);  // Catch the exception until I find a way to peek 'registered' state
+        }
 
         if (mGoogleApiClient!=null && mGoogleApiClient.isConnected()){
             mGoogleApiClient.disconnect();
@@ -510,9 +517,9 @@ public class MainActivity extends AppCompatActivity
             if (TextUtils.equals(fenceState.getFenceKey(), "timeFenceKey")) {
                 switch (fenceState.getCurrentState()) {
                     case FenceState.TRUE:
-                        Log.i(TAG, "TimeFence passe 1 minite.");
+                        Log.i(TAG, "TimeFence passe " + mPrefTimeFenceMinutes  + " minutes.");
                         Snackbar mSnackbar = Snackbar.make(mCoorLayout,
-                                "TimeFence passe 4 minite.", Snackbar.LENGTH_LONG);
+                                "TimeFence passe " + mPrefTimeFenceMinutes  + " minites.", Snackbar.LENGTH_LONG);
                         mSnackbar.setAction("OK",
                                 new View.OnClickListener() {
                                     @Override
@@ -524,7 +531,7 @@ public class MainActivity extends AppCompatActivity
                         buildMyAwarenessFence();    // repeat
                         break;
                     case FenceState.FALSE:
-                        Log.i(TAG, "TimeFence not yet 1 munite.");
+                        Log.i(TAG, "TimeFence not yet " + mPrefTimeFenceMinutes  + " munite.");
                         break;
                     case FenceState.UNKNOWN:
                         Log.i(TAG, "The TimeFence fence is in an unknown state.");
@@ -539,8 +546,22 @@ public class MainActivity extends AppCompatActivity
         long nowMillis = System.currentTimeMillis();
         long oneHourMillis = 1L * 60L * 60L * 1000L;
         long oneMinuteMillis = 4L * 60L * 1000L;
+        final long multiplyForMillis = 60L * 1000L;
 
-        mTimeFence = TimeFence.inInterval(nowMillis + oneMinuteMillis, Long.MAX_VALUE);
+        mPrefTimeFenceMinutes = DataUtility.getTimeFencingTimePreference(this);
+        if (mPrefTimeFenceMinutes < 999L) {
+            long fenceMillis = mPrefTimeFenceMinutes * multiplyForMillis;
+            mTimeFence = TimeFence.inInterval(nowMillis + fenceMillis, Long.MAX_VALUE);
+        } else {
+            // 999 is a flag that user set to 'Never' to remind time lapsed
+            Log.i(TAG, "Fence NEVER was preferred. Try unregistering both receiver and the Fence");
+            try {
+                unregisterReceiver(myFenceReceiver);      // Error "not registered"
+            } catch (Exception allEx){
+                Log.e(TAG, ""+ allEx);  // Catch the exception until I find a way to peek 'registered' state
+            }
+            unregisterFence("timeFenceKey");
+        }
     }
 
 
