@@ -29,7 +29,7 @@
             android:exported="false"/>
 
         <activity
-            android:name=".SubredditActivity"
+            android:name=".SubredditActivity" android:parentActivityName=".MainActivity"
             android:theme="@style/DiaglogTheme">
         </activity>
         <activity android:name=".DetailActivity" android:parentActivityName=".MainActivity">
@@ -54,6 +54,7 @@
                 <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY"/>
             </intent-filter>
         </service>
+        <service android:name="com.is.was.be.wannareddit.service.WannaIntentService" />
 
         <!-- Collection Widget -->
         <service

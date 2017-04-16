@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity
     private Cursor mCursor;
     public String mCurrentSubredditChoice;
     private ArrayList<String> mSpinnerList;
-    private int mSpinnerIdx;
+    private int mSpinnerIdx = -1;   // if cannot be set
 
     // Following codes added during Tablet Lesson
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
@@ -406,7 +406,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void placeSubredditCurrent(){
-
+        int spinnerLength=0;
+        if (spinner!=null){
+            spinnerLength = spinner.getCount();
+        }
         SharedPreferences shared = getDefaultSharedPreferences(this);
 
         if (shared!=null) {
@@ -424,8 +427,11 @@ public class MainActivity extends AppCompatActivity
             mCurrentSubredditChoice = prefSub;
         }
 
-        if (spinner!=null && mSpinnerIdx > -1){
-            spinner.setSelection(mSpinnerIdx);
+        if (spinner!=null && spinnerLength >= mSpinnerIdx){
+        //    spinner.setSelection(mSpinnerIdx);
+            Log.w(TAG, "First condition:  index issue in Spinner at "+ mSpinnerIdx);
+        } else {
+            Log.w(TAG, "Error: index issue in Spinner at "+ mSpinnerIdx);
         }
     }
 

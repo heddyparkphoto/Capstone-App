@@ -14,10 +14,12 @@
     <string name="post_title_temp">This place will hold my favorite subreddit\'s post.  When it happens, it will be a great day.</string>
     <string name="playMedia">Play media</string>
     <string name="comment_filler_text">This is a the post\'s comment place holder.  Please wait until we fetch the real ones.</string>
+    <string name="noConnectivity">The network is not connected, please check.</string>
 
     <string name="title_add_srddt" translatable="false">Add Another Subreddit</string>
     <string name="content_add_srddt" translatable="false">New name to add</string>
     <string name="hint_add_srddt" translatable="false">askreddit</string>
+    <string name="subreddit_not_found">Subreddit %s was not found on the site, could not add.</string>
 
     <!--Preferences-->
     <string name="pref_subrdd_screentitle">Favorite Subreddit</string>
@@ -50,5 +52,7 @@
     <string name="a11y_dupe_noadd">Subreddit %s already exists</string>
     <string name="a11y_remove_srddt">Remove this subreddit</string>
     <string name="a11y_remove_confirm">Removed %s successfully</string>
+    <string name="a11y_remove_error">%s is your Preferred subreddit.  Change your preference first.</string>
+    <string name="unknown_response">Could not verify the subreddit name, try later.</string>
 
 </resources>

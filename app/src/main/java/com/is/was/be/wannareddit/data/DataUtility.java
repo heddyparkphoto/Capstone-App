@@ -29,6 +29,8 @@ public class DataUtility {
     public final static String PERIODIC_TAG = "widget";
     public final static String SRDD_PARAM = "rdd_param";
     public final static String CATEG_PARAM = "cat_param";
+    public final static String ADD_TAG = "add";
+    public static final String RECEIVER = "receiver";
 
 
     private final static String TAG = "DataUtility";
@@ -135,5 +137,16 @@ public class DataUtility {
         }
 
         return Long.parseLong(tfPreference);
+    }
+
+    public static String getSubredditPreference(Context context){
+
+        String srPreference = "";
+        SharedPreferences shared = getDefaultSharedPreferences(context);
+        if (shared!=null) {
+            srPreference = shared.getString(context.getString(R.string.pref_subrdd_key), "");
+        }
+
+        return srPreference;
     }
 }

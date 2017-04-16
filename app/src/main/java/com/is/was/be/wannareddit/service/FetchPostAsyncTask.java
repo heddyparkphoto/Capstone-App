@@ -76,7 +76,7 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
     }
 
 
-    public static ArrayList<MainPost> parsePostData(JSONObject jo){
+    private ArrayList<MainPost> parsePostData(JSONObject jo){
         ArrayList<MainPost> returnList = null;
 
         JSONObject one;

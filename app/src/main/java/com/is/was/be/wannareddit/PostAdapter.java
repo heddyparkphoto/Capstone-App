@@ -96,6 +96,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         this.mPostList = arr;
         if (getItemCount()==0){
+            String message = mContext.getString(R.string.noPostDataText);
+            if (!Util.isOnline(mContext)){
+                message = mContext.getString(R.string.noConnectivity);
+            }
+            mEmptyTextView.setText(message);
             mEmptyTextView.setVisibility(View.VISIBLE);
         } else {
             mEmptyTextView.setVisibility(View.INVISIBLE);

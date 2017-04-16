@@ -138,16 +138,12 @@ public class DetailFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
         if (null != intent && intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT) != null) {
-            if (intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT) != null) {
                 Bundle bundle = intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT);
                 if (bundle.getParcelable(DetailFragment.PARCEL_ON_ARG) != null) {
                     mFragPost = bundle.getParcelable(DetailFragment.PARCEL_ON_ARG);
                     mSubrdd = mFragPost.getPostSubreddit();
                     mPostId = mFragPost.getPostId();
-                } else {
-                    // Nothing to-do for now.
                 }
-            }
         } else {
             if (getArguments() != null) {
                 Bundle args = getArguments();
@@ -224,7 +220,7 @@ public class DetailFragment extends Fragment {
                     mediaButton.setVisibility(View.INVISIBLE);
                 }
 
-                if (mFragPost.getThumburl() != null) {
+                if (mFragPost.getThumburl() != null && !mFragPost.getThumburl().isEmpty()) {
                     Picasso.with(getActivity()).load(mFragPost.getThumburl()).into(postImage);
                 }
 
