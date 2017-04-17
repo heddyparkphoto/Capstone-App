@@ -247,11 +247,9 @@ public class SubredditActivity extends AppCompatActivity
                 public void onClick(View view) {
                     String rmConfStr;
                     String thisname = nameView.getText().toString();
-                    String withPipeChar = DataUtility.getSubredditPreference(mContext);
-                    int idx = withPipeChar.indexOf("|");
-                    String realname = (withPipeChar.substring(0, idx));
+                    String preferredname = DataUtility.getSubredditPreference(mContext);
 
-                    if (realname.equalsIgnoreCase(thisname)) {
+                    if (preferredname.equalsIgnoreCase(thisname)) {
                         rmConfStr = String.format(getResources().getString(R.string.a11y_remove_error), thisname);
                         Toast toast = Toast.makeText(mContext, rmConfStr, Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);

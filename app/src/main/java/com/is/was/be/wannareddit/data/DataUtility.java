@@ -32,6 +32,8 @@ public class DataUtility {
     public final static String ADD_TAG = "add";
     public static final String RECEIVER = "receiver";
 
+    // DB sortOrder
+    public static final String sortOrder = ListColumns.SUBREDDITNAME + " ASC ";
 
     private final static String TAG = "DataUtility";
 

@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.is.was.be.wannareddit.data.DataUtility;
 import com.is.was.be.wannareddit.data.ForRedditProvider;
 import com.is.was.be.wannareddit.data.ListColumns;
 
@@ -109,22 +110,21 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             setHasOptionsMenu(true);
 
             ArrayList<String> holder = new ArrayList<>();
-            ArrayList<String> savedholder = new ArrayList<>();
 
             ListPreference localPref = (ListPreference) findPreference(getString(R.string.pref_subrdd_key));
 
             Uri uri = ForRedditProvider.MainContract.CONTENT_URI;
-            Cursor cursor = getActivity().getContentResolver().query(uri,
-                    new String[]{ListColumns.SUBREDDITNAME}, null, null, null);
 
-            int count = 0;
+            Cursor cursor = getActivity().getContentResolver().query(uri,
+                    new String[]{ListColumns.SUBREDDITNAME}, null, null, DataUtility.sortOrder);
+
             while (cursor.moveToNext()){
                 String name = cursor.getString(0);
                 holder.add(name);
-                savedholder.add(name + "|" + String.valueOf(count++));
             }
+
             final CharSequence[] entries = holder.toArray(new CharSequence[holder.size()]);
-            final CharSequence[] savedValues = savedholder.toArray(new CharSequence[savedholder.size()]);
+            final CharSequence[] savedValues = holder.toArray(new CharSequence[holder.size()]);
             localPref.setEntries(entries);
             localPref.setEntryValues(savedValues);
 

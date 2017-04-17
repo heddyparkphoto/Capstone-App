@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity
         // initialize to set the mAdapter to our spinner
         loadSpinner();
 
-        placeSubredditCurrent();
+//        placeSubredditCurrent();
 
 
 
@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity
 
         // STILL PROBLEM - WE DON'T WANT TO CHANGE if user is reading another subreddit when the device rotated
         // FIX LATER!!!
-        placeSubredditCurrent();
+//        placeSubredditCurrent();
 
         if (mPrefTimeFenceMinutes < 999L) {
             registerFence("timeFenceKey");
@@ -368,7 +368,7 @@ public class MainActivity extends AppCompatActivity
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // Load data into the Spinner
         return new CursorLoader(this, ForRedditProvider.MainContract.CONTENT_URI,
-                null, null, null, null);
+                null, null, null,  DataUtility.sortOrder);
     }
 
     @Override
@@ -376,6 +376,20 @@ public class MainActivity extends AppCompatActivity
         // Load data into the Spinner
         mAdapter.swapCursor(data);
         mCursor = data;
+        SharedPreferences shared = getDefaultSharedPreferences(this);
+        String prefSub = shared.getString(getString(R.string.pref_subrdd_key), "DEFAULT");
+
+        String s;
+        int idx = 0;
+        while (mCursor.moveToNext()) {
+            s = mCursor.getString(1);
+            if (prefSub.equalsIgnoreCase(s)){
+                mSpinnerIdx = idx;
+                break;
+            }
+            idx++;
+        }
+        placeSubredditCurrent();
     }
 
     @Override
@@ -406,32 +420,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void placeSubredditCurrent(){
-        int spinnerLength=0;
-        if (spinner!=null){
-            spinnerLength = spinner.getCount();
-        }
-        SharedPreferences shared = getDefaultSharedPreferences(this);
 
-        if (shared!=null) {
-            String combinedPref = shared.getString(getString(R.string.pref_subrdd_key), "DEFAULT");
-            int pos = combinedPref.indexOf("|");
-            String prefSub = "";
-            if (pos > 0) {
-                prefSub = combinedPref.substring(0, pos);
-                try {
-                    mSpinnerIdx = Integer.parseInt(combinedPref.substring(pos + 1));
-                } catch (NumberFormatException e) {
-
-                }
-            }
-            mCurrentSubredditChoice = prefSub;
-        }
-
-        if (spinner!=null && spinnerLength >= mSpinnerIdx){
-        //    spinner.setSelection(mSpinnerIdx);
+        if (mSpinnerIdx > 0){
+            spinner.setSelection(mSpinnerIdx);
             Log.w(TAG, "First condition:  index issue in Spinner at "+ mSpinnerIdx);
         } else {
             Log.w(TAG, "Error: index issue in Spinner at "+ mSpinnerIdx);
+            spinner.setSelection(1);
         }
     }
 
