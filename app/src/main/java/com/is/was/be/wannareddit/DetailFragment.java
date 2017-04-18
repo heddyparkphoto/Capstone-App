@@ -17,12 +17,15 @@ import android.widget.TextView;
 
 import com.is.was.be.wannareddit.data.DataUtility;
 import com.is.was.be.wannareddit.service.FetchDetailAsyncTask;
+import com.is.was.be.wannareddit.service.FetchPostAsyncTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import static android.content.Intent.ACTION_VIEW;
+import static com.is.was.be.wannareddit.DetailActivity.POSTID;
+import static com.is.was.be.wannareddit.DetailActivity.SUBNAME;
 
 /**
  * Created by hyeryungpark on 4/7/17.
@@ -138,12 +141,19 @@ public class DetailFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
         if (null != intent && intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT) != null) {
-                Bundle bundle = intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT);
-                if (bundle.getParcelable(DetailFragment.PARCEL_ON_ARG) != null) {
-                    mFragPost = bundle.getParcelable(DetailFragment.PARCEL_ON_ARG);
-                    mSubrdd = mFragPost.getPostSubreddit();
-                    mPostId = mFragPost.getPostId();
-                }
+            Bundle bundle = intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT);
+            if (bundle.getParcelable(DetailFragment.PARCEL_ON_ARG) != null) {
+                mFragPost = bundle.getParcelable(DetailFragment.PARCEL_ON_ARG);
+                mSubrdd = mFragPost.getPostSubreddit();
+                mPostId = mFragPost.getPostId();
+            }
+        } else if (intent.getStringExtra(POSTID)!=null){
+
+            // Case of: Widget FillInIntent - Request AsyncTask to populate the rest of fields and construct a MainPost
+            runExtra(intent.getStringExtra(SUBNAME), intent.getStringExtra(POSTID));
+            mPostId = intent.getStringExtra(POSTID);
+            mSubrdd = intent.getStringExtra(SUBNAME);
+//
         } else {
             if (getArguments() != null) {
                 Bundle args = getArguments();
@@ -164,6 +174,24 @@ public class DetailFragment extends Fragment {
         return rootView;
     }
 
+    private void runExtra(String mysubname, String mypostId) {
+        // Fetch data using AsyncTask - we'll only get one MainPost in the form of a list
+        ArrayList<MainPost> posts = null;
+        try {
+
+            posts = ((FetchPostAsyncTask) new FetchPostAsyncTask().execute(mysubname, "", mypostId)).get();
+
+            if (posts!=null && !posts.isEmpty()){
+                mFragPost = posts.get(0);
+            } else {
+                Log.e(TAG, "post for Widget didn't return.");
+            }
+
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, "" + e);
+        }
+
+    }
 
 
     @Override

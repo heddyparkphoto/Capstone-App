@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 public class DetailActivity extends AppCompatActivity {
-    private static final String LOG_TAG = DetailActivity.class.getSimpleName();
+    private static final String TAG = DetailActivity.class.getSimpleName();
     public static final String SUBNAME = "SUBNAME";
     public static final String POSTID = "POSTID";
 
@@ -28,6 +28,7 @@ public class DetailActivity extends AppCompatActivity {
                         // Nothing to-do for now.
                     }
                 } else {
+                    // this is a test block for the Widgets on the Home screen - DetailFragment handles it
                     String testPostid = intent.getStringExtra(POSTID);
                     String subredditNm = intent.getStringExtra(SUBNAME);
                 }

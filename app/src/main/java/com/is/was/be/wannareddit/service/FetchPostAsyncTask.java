@@ -41,17 +41,31 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
     @Override
     protected ArrayList<MainPost> doInBackground(String... args) {
 
-        String subreddit = args[0];
-        String category = args[1];
+        String subreddit;
+        String category = null;
+        String postIdExtra = null;
 
-        // completed url example: "https://www.reddit.com/r/todayilearned/hot.json?limit=25"
+        int numArg = args.length;
+        boolean mainApp = (numArg==2);  // Request from the Home screen Widget has numArg of 3, and requires extra step
+
+        if (mainApp) {
+            subreddit = args[0];
+            category = args[1];
+        } else {
+            subreddit = args[0];
+            postIdExtra = args[2];
+        }
+
+
+        // completed url example - mainApp: "https://www.reddit.com/r/todayilearned/hot.json?limit=25"
+        // url example - widget item: "https://www.reddit.com/r/technology/6622rb.json?limit=1"
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https")
                 .authority("www.reddit.com")
                 .appendPath("r")
                 .appendPath(subreddit)
-                .appendPath(category.concat(".json"))
-                .appendQueryParameter("limit", "25");
+                .appendPath( (mainApp? category : postIdExtra ).concat(".json"))
+                .appendQueryParameter("limit", ( mainApp? "25":"1" ));
 
         Log.d(TAG, "VERIFY: "+ builder.build().toString());
 
@@ -62,8 +76,14 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
 
         try {
             getResponse = fetchData(builder.build().toString());
-            jsonObject = new JSONObject(getResponse);
-
+            if (mainApp) {
+                jsonObject = new JSONObject(getResponse);
+            } else {
+                jsonArray = new JSONArray(getResponse);
+                if (jsonArray.length() > 1) {
+                    jsonObject = (JSONObject) jsonArray.get(0);
+                }
+            }
         } catch (MalformedURLException e){
             Log.e(TAG, ""+e);
         } catch (IOException e){
@@ -73,6 +93,7 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
         }
 
         return parsePostData(jsonObject);
+
     }
 
 
