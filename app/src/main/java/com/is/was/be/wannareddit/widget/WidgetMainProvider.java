@@ -16,6 +16,8 @@ import android.widget.RemoteViews;
 import com.is.was.be.wannareddit.DetailActivity;
 import com.is.was.be.wannareddit.MainActivity;
 import com.is.was.be.wannareddit.R;
+import com.is.was.be.wannareddit.data.DataUtility;
+import com.is.was.be.wannareddit.service.WannaIntentService;
 import com.is.was.be.wannareddit.service.WannaTaskService;
 
 /**
@@ -45,10 +47,18 @@ public class WidgetMainProvider extends AppWidgetProvider {
 
             RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_main_layout);
 
-            // Click enables widget title bar to load the MyStocksActivity UI
+            // Click enables widget title bar to load the MainActivity UI
             Intent intent = new Intent(context, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-            rv.setOnClickPendingIntent(R.id.widget_title_bar, pendingIntent);
+            rv.setOnClickPendingIntent(R.id.widget_title_txt, pendingIntent);
+
+            // Click enables widget refresh icon to kickoff an immediate update using explicit Service Intent
+            Intent refreshIntent = new Intent(context, WannaIntentService.class);
+            refreshIntent.putExtra("tag", DataUtility.RUNNOW_TAG);
+            refreshIntent.putExtra(DataUtility.CATEG_PARAM, "hot");
+            PendingIntent refreshPendingIntent = PendingIntent.getService(
+                    context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            rv.setOnClickPendingIntent(R.id.widget_refresh, refreshPendingIntent);
 
             // setRemoteAdapter() method obtains the RemoteViewsFactory declared in the WidgetMainService.java
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){

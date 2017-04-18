@@ -90,8 +90,8 @@ public class WidgetMainService extends RemoteViewsService {
 
                 final Intent fillInIntent = new Intent();
 
-                fillInIntent.putExtra(DetailActivity.SUBNAME, subreddit);
                 fillInIntent.putExtra(DetailActivity.POSTID, postId);
+                fillInIntent.putExtra(DetailActivity.SUBNAME, subreddit);
                 views.setOnClickFillInIntent(R.id.widget_one_id, fillInIntent);
                 return views;
             }
@@ -125,4 +125,6 @@ public class WidgetMainService extends RemoteViewsService {
     private void setRemoteContentDescription(RemoteViews views, String description) {
         views.setContentDescription(R.id.widget_one_id, description);
     }
+
+
 }

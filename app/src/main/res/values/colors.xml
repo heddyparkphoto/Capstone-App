@@ -4,9 +4,12 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="white">#ffffff</color>
+    <color name="white_muted">#99ffffff</color>
     <color name="black">#000000</color>
 
     <color name="wr_100">#C5CAE9</color>
     <color name="wr_a200">#536DFE</color>
     <color name="wr_a400">#3D5AFE</color>
+
+
 </resources>

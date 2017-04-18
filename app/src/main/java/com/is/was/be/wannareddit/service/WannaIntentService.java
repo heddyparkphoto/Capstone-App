@@ -26,13 +26,19 @@ public class WannaIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
         WannaTaskService taskService = new WannaTaskService(this);
+        String tagToPassIn = intent.getStringExtra("tag");
+
         Bundle args = new Bundle();
 
-        if (intent.getStringExtra("tag").equals(DataUtility.ADD_TAG)) {
+        if (tagToPassIn!=null && tagToPassIn.equals(DataUtility.RUNNOW_TAG)){
+
+            args.putString(DataUtility.CATEG_PARAM, intent.getStringExtra(DataUtility.CATEG_PARAM));
+        } else if (intent.getStringExtra("tag").equals(DataUtility.ADD_TAG)) {
+
             args.putString(DataUtility.SRDD_PARAM, intent.getStringExtra(DataUtility.SRDD_PARAM));
         }
 
-        // Activity would like to receive the result if "add" operation fails
+        // If an Activity that would like to receive the result if "add" operation fails sent receiver extra
         final ResultReceiver receiver = intent.getParcelableExtra(DataUtility.RECEIVER);
         Bundle bundle = new Bundle();
 

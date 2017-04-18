@@ -178,11 +178,9 @@ public class MainActivity extends AppCompatActivity
 
         buildMyAwarenessGclient();
 
-        // Schedule Periodic Task for Widgets (requires user settings of subreddit and
-        // category from the SharedPreferences)
-        // for now we'll hard-code test values
+        // Schedule Periodic Task for Widgets (our widget setting is everything in
+        // category "hot" as in reddit's default front screen)
         Bundle bundle = new Bundle();
-        bundle.putString(DataUtility.SRDD_PARAM, "explainlikeimfive");
         bundle.putString(DataUtility.CATEG_PARAM, "hot");
 
         PeriodicTask periodicTask = new PeriodicTask.Builder()

@@ -31,13 +31,14 @@ public class DataUtility {
     public final static String CATEG_PARAM = "cat_param";
     public final static String ADD_TAG = "add";
     public static final String RECEIVER = "receiver";
+    public final static String RUNNOW_TAG = "runnow";
 
     // DB sortOrder
     public static final String sortOrder = ListColumns.SUBREDDITNAME + " ASC ";
 
     private final static String TAG = "DataUtility";
 
-    public static ArrayList widgetJsonToContentVals(JSONObject jo, String subNm) throws JSONException {
+    public static ArrayList widgetJsonToContentVals(JSONObject jo) throws JSONException {
         ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
 
         JSONObject one;
@@ -56,7 +57,7 @@ public class DataUtility {
                             if (over18){
                                 continue;
                             }
-                            batchOperations.add(buildBatchOperation(one, subNm));
+                            batchOperations.add(buildBatchOperation(one));
                         }
                     }
                 }
@@ -70,7 +71,7 @@ public class DataUtility {
         return batchOperations;
     }
 
-    private static ContentProviderOperation buildBatchOperation(JSONObject jo, String subreddit) throws JSONException{
+    private static ContentProviderOperation buildBatchOperation(JSONObject jo) throws JSONException{
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 ForRedditProvider.WidgetContract.CONTENT_URI);
         try {
@@ -78,6 +79,7 @@ public class DataUtility {
             if (postTitle==null || postTitle.trim().length()==0){
                 postTitle = jo.getString("url");   // we'll try substitution
             }
+            String subreddit = jo.getString("subreddit");
             String poid = jo.getString("id");
             builder.withValue(WidgetColumns.POSTID, poid);
             builder.withValue(WidgetColumns.SUBRED, subreddit);

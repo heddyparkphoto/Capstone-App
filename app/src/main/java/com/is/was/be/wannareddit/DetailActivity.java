@@ -27,6 +27,9 @@ public class DetailActivity extends AppCompatActivity {
                     } else {
                         // Nothing to-do for now.
                     }
+                } else {
+                    String testPostid = intent.getStringExtra(POSTID);
+                    String subredditNm = intent.getStringExtra(SUBNAME);
                 }
             }
 

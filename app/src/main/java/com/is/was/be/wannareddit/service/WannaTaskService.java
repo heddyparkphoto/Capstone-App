@@ -73,14 +73,13 @@ public class WannaTaskService extends GcmTaskService {
         if (mContext == null) {
             mContext = this;
         }
-        String r = null;
-        String c = null;
+
+        String category = null;     // Currently not used, but maybe in the near future
 
         String taskName = taskParams.getTag();
 
-        if (taskName.equals(DataUtility.PERIODIC_TAG)) {
-            r = taskParams.getExtras().getString(DataUtility.SRDD_PARAM);
-            c = taskParams.getExtras().getString(DataUtility.CATEG_PARAM);
+        if (taskName.equals(DataUtility.PERIODIC_TAG) || taskName.equals(DataUtility.RUNNOW_TAG)) {
+            category = taskParams.getExtras().getString(DataUtility.CATEG_PARAM);
 //        }
         StringBuilder urlStringBuilder = new StringBuilder();
         // Base URL for the Yahoo query
@@ -122,7 +121,7 @@ public class WannaTaskService extends GcmTaskService {
 //                Log.d(TAG, getResponse);
                 jsonObject = new JSONObject(getResponse);
 
-                ArrayList dbOperationList = DataUtility.widgetJsonToContentVals(jsonObject, r);
+                ArrayList dbOperationList = DataUtility.widgetJsonToContentVals(jsonObject);
                 if (dbOperationList == null || dbOperationList.isEmpty()) {
                     Log.w(TAG, "new insert operation empty.");
                     return GcmNetworkManager.RESULT_FAILURE;
