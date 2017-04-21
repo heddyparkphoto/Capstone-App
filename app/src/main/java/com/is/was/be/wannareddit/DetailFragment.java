@@ -1,5 +1,6 @@
 package com.is.was.be.wannareddit;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,8 +24,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import static android.content.Intent.ACTION_VIEW;
-import static com.is.was.be.wannareddit.DetailActivity.POSTID;
-import static com.is.was.be.wannareddit.DetailActivity.SUBNAME;
 
 /**
  * Created by hyeryungpark on 4/7/17.
@@ -65,6 +64,16 @@ public class DetailFragment extends Fragment {
     // Comment text ArrayAdapter
     ArrayAdapter<String> mCommentAdapter;
 
+    // Zoom Image
+    // Hold a reference to the current animator,
+    // so that it can be canceled mid-way.
+    private Animator mCurrentAnimator;
+
+    // The system "short" animation time duration, in milliseconds. This
+    // duration is ideal for subtle animations or animations that occur
+    // very frequently.
+    private int mShortAnimationDuration;
+
     public DetailFragment(){
 
     }
@@ -80,6 +89,7 @@ public class DetailFragment extends Fragment {
         mListView = (ListView) rootView.findViewById(R.id.listview_comments);
         mEmptyView= (TextView) rootView.findViewById(R.id.recyclerview_comments_empty);
         mediaButton= (ImageButton) rootView.findViewById(R.id.media_control);
+
 //        timelineView = (TextView) rootView.findViewById(R.id.timeline);
 //        authorView = (TextView) rootView.findViewById(R.id.author_by);
 //        numberOfCommentsView = (TextView) rootView.findViewById(R.id.comments_num);
@@ -146,12 +156,12 @@ public class DetailFragment extends Fragment {
                 mSubrdd = mFragPost.getPostSubreddit();
                 mPostId = mFragPost.getPostId();
             }
-        } else if (intent.getStringExtra(POSTID)!=null){
-
-            // Case of: Widget FillInIntent - Request AsyncTask to populate the rest of fields and construct a MainPost
-            runExtra(intent.getStringExtra(SUBNAME), intent.getStringExtra(POSTID));
-            mPostId = intent.getStringExtra(POSTID);
-            mSubrdd = intent.getStringExtra(SUBNAME);
+//        } else if (intent.getStringExtra(POSTID)!=null){
+//
+//            // Case of: Widget FillInIntent - Request AsyncTask to populate the rest of fields and construct a MainPost
+//            runExtra(intent.getStringExtra(SUBNAME), intent.getStringExtra(POSTID));
+//            mPostId = intent.getStringExtra(POSTID);
+//            mSubrdd = intent.getStringExtra(SUBNAME);
 //
         } else {
             if (getArguments() != null) {
@@ -249,7 +259,20 @@ public class DetailFragment extends Fragment {
 
                 if (mFragPost.getThumburl() != null && !mFragPost.getThumburl().isEmpty()) {
                     Picasso.with(getActivity()).load(mFragPost.getThumburl()).into(postImage);
+
+                    postImage.setOnClickListener(new View.OnClickListener(){
+
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getActivity(), CardFullImageActivity.class);
+                            intent.putExtra(CardFullImageActivity.FULL_IMAGE_URL, mFragPost.getThumburl());
+
+                            startActivity(intent);
+                        }
+                    });
                 }
+
+
 
 //                if (mFragPost.createdUtcTime != 0L) {
 //                    timelineView.setText(DataUtility.getDate(mFragPost.createdUtcTime));

@@ -50,7 +50,6 @@
         android:scaleType="centerCrop"
         />
     </ScrollView>
-
         <ListView
             android:id="@+id/listview_comments"
             android:layout_width="match_parent"

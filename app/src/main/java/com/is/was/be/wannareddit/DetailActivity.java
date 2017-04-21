@@ -3,9 +3,14 @@ package com.is.was.be.wannareddit;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.is.was.be.wannareddit.data.DataUtility;
+import com.is.was.be.wannareddit.service.FetchPostAsyncTask;
+
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class DetailActivity extends AppCompatActivity {
     private static final String TAG = DetailActivity.class.getSimpleName();
@@ -15,7 +20,7 @@ public class DetailActivity extends AppCompatActivity {
     TextView da_timelineView;
     TextView da_authorView;
     TextView da_numberOfCommentsView;
-    MainPost da_mMainPost;
+    MainPost mMainPost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +28,7 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         if (savedInstanceState == null) {
-            MainPost mMainPost = null;
+            mMainPost = null;
 
             // in order to de-couple in either UI use bundle arguments
             Intent intent = getIntent();
@@ -32,17 +37,17 @@ public class DetailActivity extends AppCompatActivity {
                     Bundle bundle = intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT);
                     if (bundle.getParcelable(DetailFragment.PARCEL_ON_ARG) != null) {
                         mMainPost = bundle.getParcelable(DetailFragment.PARCEL_ON_ARG);
-                        da_mMainPost = mMainPost;
+
                     } else {
                         // Nothing to-do for now.
                     }
-                } else {
-                    // this is a test block for the Widgets on the Home screen - DetailFragment handles it
-                    String testPostid = intent.getStringExtra(POSTID);
-                    String subredditNm = intent.getStringExtra(SUBNAME);
+                } else if (intent.getStringExtra(POSTID)!=null){
+                    // Case of: Widget FillInIntent - Request AsyncTask to populate the rest of fields and construct a MainPost
+                    runExtra(intent.getStringExtra(SUBNAME), intent.getStringExtra(POSTID));
                 }
             }
 
+            // Pass the mMainPost either gotten from the Parcelable or from running the runExtra
             Bundle args = new Bundle();
             args.putParcelable(DetailFragment.PARCEL_ON_ARG, mMainPost);
 
@@ -58,16 +63,34 @@ public class DetailActivity extends AppCompatActivity {
         da_authorView = (TextView) findViewById(R.id.author_by);
         da_numberOfCommentsView = (TextView) findViewById(R.id.comments_num);
 
-        if (da_mMainPost!=null){
-            if (da_mMainPost.createdUtcTime != 0L) {
-                da_timelineView.setText(DataUtility.getDate(da_mMainPost.createdUtcTime));
+        if (mMainPost!=null){
+            if (mMainPost.createdUtcTime != 0L) {
+                da_timelineView.setText(DataUtility.getDate(mMainPost.createdUtcTime));
             } else {
-                da_timelineView.setText(Long.toString(da_mMainPost.createdUtcTime));
+                da_timelineView.setText(Long.toString(mMainPost.createdUtcTime));
             }
 
-            da_authorView.setText("by " + da_mMainPost.author);
-            da_numberOfCommentsView.setText(String.valueOf(da_mMainPost.numComments) + " Comments");
+            da_authorView.setText("by " + mMainPost.author);
+            da_numberOfCommentsView.setText(String.valueOf(mMainPost.numComments) + " Comments");
         }
+    }
+    private void runExtra(String mysubname, String mypostId) {
+        // Fetch data using AsyncTask - we'll only get one MainPost in the form of a list
+        ArrayList<MainPost> posts = null;
+        try {
+
+            posts = ((FetchPostAsyncTask) new FetchPostAsyncTask().execute(mysubname, "", mypostId)).get();
+
+            if (posts!=null && !posts.isEmpty()){
+                mMainPost = posts.get(0);
+            } else {
+                Log.e(TAG, "post for Widget didn't return.");
+            }
+
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, "" + e);
+        }
+
     }
 
 }

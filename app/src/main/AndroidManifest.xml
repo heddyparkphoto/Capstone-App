@@ -30,7 +30,7 @@
 
         <activity
             android:name=".SubredditActivity" android:parentActivityName=".MainActivity"
-            android:theme="@style/DiaglogTheme">
+            android:theme="@style/ClearTheme">
         </activity>
         <activity android:name=".DetailActivity" android:parentActivityName=".MainActivity">
             <intent-filter>
@@ -44,6 +44,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity" >
+        </activity>
+
+        <activity android:name="CardFullImageActivity" android:parentActivityName=".DetailActivity"
+                  android:theme="@style/ClearTheme">
         </activity>
 
         <service
