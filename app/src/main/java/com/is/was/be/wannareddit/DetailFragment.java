@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.is.was.be.wannareddit.data.DataUtility;
 import com.is.was.be.wannareddit.service.FetchDetailAsyncTask;
 import com.is.was.be.wannareddit.service.FetchPostAsyncTask;
 import com.squareup.picasso.Picasso;
@@ -81,9 +80,9 @@ public class DetailFragment extends Fragment {
         mListView = (ListView) rootView.findViewById(R.id.listview_comments);
         mEmptyView= (TextView) rootView.findViewById(R.id.recyclerview_comments_empty);
         mediaButton= (ImageButton) rootView.findViewById(R.id.media_control);
-        timelineView = (TextView) rootView.findViewById(R.id.timeline);
-        authorView = (TextView) rootView.findViewById(R.id.author_by);
-        numberOfCommentsView = (TextView) rootView.findViewById(R.id.comments_num);
+//        timelineView = (TextView) rootView.findViewById(R.id.timeline);
+//        authorView = (TextView) rootView.findViewById(R.id.author_by);
+//        numberOfCommentsView = (TextView) rootView.findViewById(R.id.comments_num);
 
         //&&&&&&&&&&&&&&&&&&&&&&&&&&
 //        mScrollingFrm = (FrameLayout) rootView.findViewById(R.id.scrolling_frameL);
@@ -245,21 +244,21 @@ public class DetailFragment extends Fragment {
                         }
                     });
                 } else {
-                    mediaButton.setVisibility(View.INVISIBLE);
+                    mediaButton.setVisibility(View.GONE);
                 }
 
                 if (mFragPost.getThumburl() != null && !mFragPost.getThumburl().isEmpty()) {
                     Picasso.with(getActivity()).load(mFragPost.getThumburl()).into(postImage);
                 }
 
-                if (mFragPost.createdUtcTime != 0L) {
-                    timelineView.setText(DataUtility.getDate(mFragPost.createdUtcTime));
-                } else {
-                    timelineView.setText(Long.toString(mFragPost.createdUtcTime));
-                }
-
-                authorView.setText("by " + mFragPost.author);
-                numberOfCommentsView.setText(String.valueOf(mFragPost.numComments) + " Comments");
+//                if (mFragPost.createdUtcTime != 0L) {
+//                    timelineView.setText(DataUtility.getDate(mFragPost.createdUtcTime));
+//                } else {
+//                    timelineView.setText(Long.toString(mFragPost.createdUtcTime));
+//                }
+//
+//                authorView.setText("by " + mFragPost.author);
+//                numberOfCommentsView.setText(String.valueOf(mFragPost.numComments) + " Comments");
             }
 
         } catch (InterruptedException | ExecutionException e){
