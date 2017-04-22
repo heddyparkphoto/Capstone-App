@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.is.was.be.wannareddit.service.FetchDetailAsyncTask;
@@ -44,6 +45,7 @@ public class DetailFragment extends Fragment {
 
     TextView postTitle;
     ImageView postImage;
+    ScrollView scrollImageContainer;
     ListView mListView;
     TextView mEmptyView;
     ImageButton mediaButton;
@@ -89,6 +91,9 @@ public class DetailFragment extends Fragment {
         mListView = (ListView) rootView.findViewById(R.id.listview_comments);
         mEmptyView= (TextView) rootView.findViewById(R.id.recyclerview_comments_empty);
         mediaButton= (ImageButton) rootView.findViewById(R.id.media_control);
+
+        // this view that contains the image to be animated.  It is referred by the DetailActivity.
+        scrollImageContainer = (ScrollView) rootView.findViewById(R.id.scroll_image);
 
 //        timelineView = (TextView) rootView.findViewById(R.id.timeline);
 //        authorView = (TextView) rootView.findViewById(R.id.author_by);
@@ -183,6 +188,7 @@ public class DetailFragment extends Fragment {
         return rootView;
     }
 
+    // MAY NEED CLEAN-UP - test Tablet too
     private void runExtra(String mysubname, String mypostId) {
         // Fetch data using AsyncTask - we'll only get one MainPost in the form of a list
         ArrayList<MainPost> posts = null;
@@ -201,7 +207,6 @@ public class DetailFragment extends Fragment {
         }
 
     }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -260,16 +265,16 @@ public class DetailFragment extends Fragment {
                 if (mFragPost.getThumburl() != null && !mFragPost.getThumburl().isEmpty()) {
                     Picasso.with(getActivity()).load(mFragPost.getThumburl()).into(postImage);
 
-                    postImage.setOnClickListener(new View.OnClickListener(){
-
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent(getActivity(), CardFullImageActivity.class);
-                            intent.putExtra(CardFullImageActivity.FULL_IMAGE_URL, mFragPost.getThumburl());
-
-                            startActivity(intent);
-                        }
-                    });
+//                    postImage.setOnClickListener(new View.OnClickListener(){
+//
+//                        @Override
+//                        public void onClick(View view) {
+//                            Intent intent = new Intent(getActivity(), CardFullImageActivity.class);
+//                            intent.putExtra(CardFullImageActivity.FULL_IMAGE_URL, mFragPost.getThumburl());
+//
+//                            startActivity(intent);
+//                        }
+//                    });
                 }
 
 

@@ -1,9 +1,12 @@
 package com.is.was.be.wannareddit;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.is.was.be.wannareddit.data.DataUtility;
@@ -16,6 +19,7 @@ public class DetailActivity extends AppCompatActivity {
     private static final String TAG = DetailActivity.class.getSimpleName();
     public static final String SUBNAME = "SUBNAME";
     public static final String POSTID = "POSTID";
+    private static final String FRAG_TAG="FRAG_TAG";
 
     TextView da_timelineView;
     TextView da_authorView;
@@ -39,7 +43,7 @@ public class DetailActivity extends AppCompatActivity {
                         mMainPost = bundle.getParcelable(DetailFragment.PARCEL_ON_ARG);
 
                     } else {
-                        // Nothing to-do for now.
+                        Log.w(TAG, "MainPost was null on the Intent parcel");
                     }
                 } else if (intent.getStringExtra(POSTID)!=null){
                     // Case of: Widget FillInIntent - Request AsyncTask to populate the rest of fields and construct a MainPost
@@ -55,7 +59,7 @@ public class DetailActivity extends AppCompatActivity {
             df.setArguments(args);
             getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.detailcontainer, df)
-                    .add(R.id.detailcontainer_fragment, df)
+                    .add(R.id.detailcontainer_fragment, df, FRAG_TAG)
                     .commit();
         }
 
@@ -93,4 +97,27 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    /*
+        Instructive Motion applied to the small Image area to help user the image can be scrolled
+     */
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+
+        DetailFragment myfrag = (DetailFragment) getSupportFragmentManager().findFragmentByTag(FRAG_TAG);
+        if (myfrag!=null){
+            ScrollView myscroll = myfrag.scrollImageContainer;
+            if (myscroll!=null) {
+                final int startScrollPos = getResources().getDimensionPixelSize(
+                        R.dimen.init_scroll_up_distance);
+
+                Animator animator = ObjectAnimator.ofInt(
+                        myscroll,
+                        "scrollY",
+                        startScrollPos)
+                        .setDuration(300);
+                animator.start();
+            }
+        }
+    }
 }

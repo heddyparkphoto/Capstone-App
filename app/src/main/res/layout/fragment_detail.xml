@@ -15,18 +15,18 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         >
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/post_title_text"
-        android:text="@string/post_title_temp"
-        android:textSize="24sp"
-        android:paddingTop="2dp"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/post_title_text"
+            android:text="@string/post_title_temp"
+            android:textSize="24sp"
+            android:paddingTop="2dp"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
 
-        android:textColor="@color/black"
-        android:fontFamily="sans-serif-condensed"
-        android:clickable="true"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-condensed"
+            android:clickable="true"
         />
     </ScrollView>
 
@@ -38,38 +38,42 @@
         android:contentDescription="@string/playMedia"
         android:src="@drawable/ic_media_play"
         android:visibility="gone"/>
+
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
-        >
-    <ImageView
-        android:id="@+id/post_image"
+        android:id="@+id/scroll_image"
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
+        >
+        <ImageView
+            android:id="@+id/post_image"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
         />
     </ScrollView>
-        <ListView
-            android:id="@+id/listview_comments"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="28dp"
-            />
-        <!-- empty list -->
-        <TextView
-            android:id="@+id/recyclerview_comments_empty"
-            android:text="@string/noCommentDataText"
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:gravity="center_horizontal"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingEnd="@dimen/activity_horizontal_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingStart="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            android:paddingBottom="28dp"
-            android:visibility="invisible"
-            />
+
+
+    <ListView
+        android:id="@+id/listview_comments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
+        />
+    <!-- empty list -->
+    <TextView
+        android:id="@+id/recyclerview_comments_empty"
+        android:text="@string/noCommentDataText"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:gravity="center_horizontal"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="28dp"
+        android:visibility="invisible"
+        />
 
 </LinearLayout>
