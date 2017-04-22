@@ -75,7 +75,7 @@ public class DetailActivity extends AppCompatActivity {
             }
 
             da_authorView.setText("by " + mMainPost.author);
-            da_numberOfCommentsView.setText(String.valueOf(mMainPost.numComments) + " Comments");
+            da_numberOfCommentsView.setText(String.valueOf(mMainPost.numComments) + " Comments/Threads");
         }
     }
     private void runExtra(String mysubname, String mypostId) {

@@ -33,6 +33,8 @@ import static android.content.Intent.ACTION_VIEW;
 public class DetailFragment extends Fragment {
 
     public static final String PARCEL_ON_ARG = "PARCEL_ON_ARG";
+    public static final String GET_POST_ARG = "GET_POST_ARG";
+
     public static final String EXTRA_ON_INTENT = "EXTRA_ON_INTENT";
 
     private final String TAG = DetailFragment.class.getSimpleName();
@@ -172,10 +174,21 @@ public class DetailFragment extends Fragment {
             if (getArguments() != null) {
                 Bundle args = getArguments();
                 if (args != null) {
-                    mFragPost = args.getParcelable(DetailFragment.PARCEL_ON_ARG);
-                    if (mFragPost!=null) {
-                        mSubrdd = mFragPost.getPostSubreddit();
-                        mPostId = mFragPost.getPostId();
+                    if (args.getParcelable(DetailFragment.PARCEL_ON_ARG) != null) {
+                        mFragPost = args.getParcelable(DetailFragment.PARCEL_ON_ARG);
+                        if (mFragPost != null) {
+                            mSubrdd = mFragPost.getPostSubreddit();
+                            mPostId = mFragPost.getPostId();
+                        }
+                    } else if (args.getStringArray(DetailFragment.GET_POST_ARG) != null){
+                        String[] lookupinfo = args.getStringArray(DetailFragment.GET_POST_ARG);
+                        if (lookupinfo==null || lookupinfo.length < 2){
+                            Log.e(TAG, "Missing data for lookup for mTwoPane mode.");
+                        } else {
+                            String mySubrdd = lookupinfo[0];
+                            String myCat = lookupinfo[1];
+                            runTwoPaneSupport(mySubrdd, myCat);
+                        }
                     }
                 }
             }
@@ -188,18 +201,23 @@ public class DetailFragment extends Fragment {
         return rootView;
     }
 
-    // MAY NEED CLEAN-UP - test Tablet too
-    private void runExtra(String mysubname, String mypostId) {
+    // Default (first screen) of Master/Detail mode supports initial post to be populated with the app default
+
+    private void runTwoPaneSupport(String mysubname, String myCategory) {
         // Fetch data using AsyncTask - we'll only get one MainPost in the form of a list
         ArrayList<MainPost> posts = null;
         try {
 
-            posts = ((FetchPostAsyncTask) new FetchPostAsyncTask().execute(mysubname, "", mypostId)).get();
+            posts = ((FetchPostAsyncTask) new FetchPostAsyncTask().execute(mysubname, "", "", myCategory)).get();
 
             if (posts!=null && !posts.isEmpty()){
                 mFragPost = posts.get(0);
+                if (mFragPost!=null){
+                    mSubrdd = mFragPost.getPostSubreddit();
+                    mPostId = mFragPost.getPostId();
+                }
             } else {
-                Log.e(TAG, "post for Widget didn't return.");
+                Log.e(TAG, "Post for TwoPane didn't return.");
             }
 
         } catch (InterruptedException | ExecutionException e) {
@@ -266,8 +284,6 @@ public class DetailFragment extends Fragment {
                     Picasso.with(getActivity()).load(mFragPost.getThumburl()).into(postImage);
                 }
 
-
-
 //                if (mFragPost.createdUtcTime != 0L) {
 //                    timelineView.setText(DataUtility.getDate(mFragPost.createdUtcTime));
 //                } else {
@@ -277,7 +293,6 @@ public class DetailFragment extends Fragment {
 //                authorView.setText("by " + mFragPost.author);
 //                numberOfCommentsView.setText(String.valueOf(mFragPost.numComments) + " Comments");
             }
-
         } catch (InterruptedException | ExecutionException e){
             Log.e(TAG, "" + e);
         }

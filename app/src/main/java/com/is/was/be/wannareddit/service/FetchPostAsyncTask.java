@@ -47,13 +47,21 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
 
         int numArg = args.length;
         boolean mainApp = (numArg==2);  // Request from the Home screen Widget has numArg of 3, and requires extra step
+        boolean supportTwoPane = (numArg==4);   // TwoPane support
+        final String limitPerApp;
 
         if (mainApp) {
             subreddit = args[0];
             category = args[1];
+            limitPerApp = "25";
+        } else if (supportTwoPane) {
+            subreddit = args[0];
+            category = args[3];
+            limitPerApp = "10";
         } else {
             subreddit = args[0];
             postIdExtra = args[2];
+            limitPerApp = "1";
         }
 
 
@@ -64,8 +72,8 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
                 .authority("www.reddit.com")
                 .appendPath("r")
                 .appendPath(subreddit)
-                .appendPath( (mainApp? category : postIdExtra ).concat(".json"))
-                .appendQueryParameter("limit", ( mainApp? "25":"1" ));
+                .appendPath( ((mainApp || supportTwoPane)? category : postIdExtra ).concat(".json"))
+                .appendQueryParameter("limit", limitPerApp);
 
         Log.d(TAG, "VERIFY: "+ builder.build().toString());
 
@@ -76,7 +84,7 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
 
         try {
             getResponse = fetchData(builder.build().toString());
-            if (mainApp) {
+            if (mainApp || supportTwoPane) {
                 jsonObject = new JSONObject(getResponse);
             } else {
                 jsonArray = new JSONArray(getResponse);
@@ -95,7 +103,6 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
         return parsePostData(jsonObject);
 
     }
-
 
     private ArrayList<MainPost> parsePostData(JSONObject jo){
         ArrayList<MainPost> returnList = null;

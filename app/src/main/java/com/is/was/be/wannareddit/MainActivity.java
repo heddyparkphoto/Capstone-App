@@ -149,14 +149,16 @@ public class MainActivity extends AppCompatActivity
 
         /*
         &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-        Detail fragment
+        Widget stuff??
          */
 
         MainPost post=null;
         if (getIntent()!=null) {
+            Log.d(TAG, "MainActivity --");
 
             Intent intent = getIntent();
             if (intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT) != null) {
+                Log.d(TAG, "MainActivity --EXTRA_ON_INTENT");
                 Bundle bundle = intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT);
                 if (bundle.getParcelable(DetailFragment.PARCEL_ON_ARG) != null) {
                     post = bundle.getParcelable(DetailFragment.PARCEL_ON_ARG);
@@ -172,6 +174,11 @@ public class MainActivity extends AppCompatActivity
                 if (post != null){
                     Bundle args = new Bundle();
                     args.putParcelable((DetailFragment.PARCEL_ON_ARG), post);
+                    df.setArguments(args);
+                } else {
+                    Bundle args = new Bundle();
+                    Log.d(TAG, "Check subreddut: "+mCurrentSubredditChoice);
+                    args.putStringArray(DetailFragment.GET_POST_ARG, new String[]{mCurrentSubredditChoice, "hot"});
                     df.setArguments(args);
                 }
                 getSupportFragmentManager().beginTransaction()
