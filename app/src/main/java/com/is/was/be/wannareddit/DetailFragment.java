@@ -264,17 +264,6 @@ public class DetailFragment extends Fragment {
 
                 if (mFragPost.getThumburl() != null && !mFragPost.getThumburl().isEmpty()) {
                     Picasso.with(getActivity()).load(mFragPost.getThumburl()).into(postImage);
-
-//                    postImage.setOnClickListener(new View.OnClickListener(){
-//
-//                        @Override
-//                        public void onClick(View view) {
-//                            Intent intent = new Intent(getActivity(), CardFullImageActivity.class);
-//                            intent.putExtra(CardFullImageActivity.FULL_IMAGE_URL, mFragPost.getThumburl());
-//
-//                            startActivity(intent);
-//                        }
-//                    });
                 }
 
 

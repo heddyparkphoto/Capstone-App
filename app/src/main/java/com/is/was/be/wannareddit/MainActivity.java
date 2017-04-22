@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity
 
     // Play service variables
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final String SPIN_TO_POSITION = "SPIN_TO_POSITION";
+    private static final String BROWSING_SUBNAME = "BROWSING_SUBNAME";
     protected GoogleApiClient mGoogleApiClient;
     // Declare variables for pending intent and fence receiver.
     private final static String FENCE_RECIEVER_ACTION = "FENCE_RECIEVER_ACTION";
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity
     private Cursor mCursor;
     public String mCurrentSubredditChoice;
     private ArrayList<String> mSpinnerList;
-    private int mSpinnerIdx = -1;   // if cannot be set
+    private int mSpinnerIdx = Spinner.INVALID_POSITION;  // if cannot be set
 
     // Following codes added during Tablet Lesson
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
@@ -130,6 +132,16 @@ public class MainActivity extends AppCompatActivity
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         // initialize to set the mAdapter to our spinner
         loadSpinner();
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(SPIN_TO_POSITION)){
+            mSpinnerIdx = savedInstanceState.getInt(SPIN_TO_POSITION);
+            mCurrentSubredditChoice = savedInstanceState.getString(BROWSING_SUBNAME);
+        } else {
+            SharedPreferences shared = getDefaultSharedPreferences(this);
+            mCurrentSubredditChoice = shared.getString(getString(R.string.pref_subrdd_key), "DEFAULT");
+            Log.d(TAG, "NEW CREATE! noSaved instance!");
+        }
+
 
 //        placeSubredditCurrent();
 
@@ -376,7 +388,7 @@ public class MainActivity extends AppCompatActivity
         mCursor = data;
         SharedPreferences shared = getDefaultSharedPreferences(this);
         String prefSub = shared.getString(getString(R.string.pref_subrdd_key), "DEFAULT");
-
+        Log.d(TAG, "onLoadFinished: Pref Sub name is: " + prefSub);
         String s;
         int idx = 0;
         while (mCursor.moveToNext()) {
@@ -405,6 +417,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 mCurrentSubredditChoice = ((TextView) view).getText().toString();
+                mSpinnerIdx = position;
+//                Log.d(TAG, "Spinner "+mCurrentSubredditChoice + " position: "+position);
+
 //                Toast.makeText(getApplicationContext(), mCurrentSubredditChoice, Toast.LENGTH_SHORT).show();
             }
 
@@ -419,7 +434,7 @@ public class MainActivity extends AppCompatActivity
 
     private void placeSubredditCurrent(){
 
-        if (mSpinnerIdx > 0){
+        if (mSpinnerIdx > -1){
             spinner.setSelection(mSpinnerIdx);
             Log.w(TAG, "First condition:  index issue in Spinner at "+ mSpinnerIdx);
         } else {
@@ -428,6 +443,16 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        if (mSpinnerIdx != Spinner.INVALID_POSITION){
+            outState.putInt(SPIN_TO_POSITION, mSpinnerIdx);
+            Log.d(TAG, "saving position: " + mSpinnerIdx);
+            outState.putString(BROWSING_SUBNAME, mCurrentSubredditChoice);
+        }
+        super.onSaveInstanceState(outState);
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -448,7 +473,7 @@ public class MainActivity extends AppCompatActivity
             // Return a MainPagerFragment instance for each category - important: category names
             // are part of main recycler view's parameter when invoking reddit public api.
             String inLowerCase = fiveCategories[position].toLowerCase();
-
+            Log.d("SectionsPagerAdapter", mCurrentSubredditChoice);
             return MainPagerFragment.newInstance(position + 1, inLowerCase, mCurrentSubredditChoice);
         }
 

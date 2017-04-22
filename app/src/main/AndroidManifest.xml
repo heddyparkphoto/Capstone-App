@@ -43,11 +43,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:name=".SettingsActivity" >
-        </activity>
-
-        <activity android:name="CardFullImageActivity" android:parentActivityName=".DetailActivity"
-                  android:theme="@style/ClearTheme">
+        <activity android:name=".SettingsActivity">
         </activity>
 
         <service
