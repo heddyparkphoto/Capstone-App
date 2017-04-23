@@ -20,8 +20,8 @@
             android:id="@+id/collapsing_toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
-            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
+            app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             app:expandedTitleMarginStart="16dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed" >
 
@@ -31,15 +31,18 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            android:layout_gravity="bottom"
-            >
+            android:theme="@style/AppTheme.NoActionBar"
+            android:layout_gravity="top"
+            android:elevation="8dp">
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:entries="@array/interpolators"
                 android:id="@+id/interpolator_spinner"
-                android:gravity="bottom|end"
+                android:paddingStart="80dp"
+                android:paddingRight="80dp"
                 app:layout_collapseMode="parallax"
+
                 />
         </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
