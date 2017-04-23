@@ -21,10 +21,9 @@
             android:id="@+id/post_title_text"
             android:text="@string/post_title_temp"
             android:textSize="24sp"
-            android:paddingTop="2dp"
+            android:padding="16dp"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
-
-            android:textColor="@color/black"
+            android:textColor="@color/offblack"
             android:fontFamily="sans-serif-condensed"
             android:clickable="true"
         />
@@ -35,21 +34,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:padding="16dp"
         android:contentDescription="@string/playMedia"
-        android:src="@drawable/ic_media_play"
+        android:src="@drawable/ic_play_video"
+        android:background="@drawable/md_transparent"
         android:visibility="gone"/>
 
     <ScrollView
         android:id="@+id/scroll_image"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="250dp"
+
         >
         <ImageView
             android:id="@+id/post_image"
-            android:layout_width="match_parent"
+            android:layout_width="400dp"
             android:layout_height="400dp"
+            android:layout_gravity="center"
+
             android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
+            android:scaleType="fitEnd"
         />
     </ScrollView>
 
@@ -58,6 +62,7 @@
         android:id="@+id/listview_comments"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="12dp"
         />
     <!-- empty list -->
     <TextView

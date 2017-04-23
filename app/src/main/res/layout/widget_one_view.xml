@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/widget_one_id"
     android:layout_width="match_parent"
-    android:layout_height="36dp"
+    android:layout_height="72dp"
+    android:textColor="@color/offblack"
     android:padding="@dimen/widget_margin"
-
-    android:gravity="start|center_vertical"
+    android:textSize="20sp"
+    android:gravity="center_vertical|start"
     tools:text="@string/default_post_text"
     android:contentDescription="@string/default_post_text"
     />

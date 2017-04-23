@@ -20,8 +20,10 @@
     <color name="colorAccentDark_bad">#cabf45</color>
 
     <color name="white">#ffffff</color>
-    <color name="white_muted">#99ffffff</color>
+    <color name="white_muted">#55ffffff</color>
     <color name="black">#000000</color>
+    <color name="offblack">#bb000000</color>
+
 
     <color name="wr_100">#C5CAE9</color>
     <color name="wr_a200">#536DFE</color>

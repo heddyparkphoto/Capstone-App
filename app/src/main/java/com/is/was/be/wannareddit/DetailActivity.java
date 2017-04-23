@@ -95,6 +95,8 @@ public class DetailActivity extends AppCompatActivity {
             Log.e(TAG, "" + e);
         }
 
+
+
     }
 
     /*

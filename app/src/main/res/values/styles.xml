@@ -7,7 +7,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionMenuTextColor">@color/colorAccentDark</item>
-        <!--<item name="android:statusBarColor">@android:color/transparent</item>-->
+        <item name="titleTextColor">@color/offblack</item>
+        <item name="homeAsUpIndicator">@drawable/ic_home_arrow</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
