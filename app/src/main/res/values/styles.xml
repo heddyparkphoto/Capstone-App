@@ -6,12 +6,13 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionMenuTextColor">@color/colorAccentDark</item>
+        <!--<item name="android:statusBarColor">@android:color/transparent</item>-->
     </style>
 
-    <style name="AppTheme.NoActionBar">
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="actionMenuTextColor">@color/colorAccentDark</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -28,12 +29,12 @@
 
     </style>
 
-
     <style name="DiaglogTheme" parent="@style/Theme.AppCompat.Dialog">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
     </style>
     <style name="ClearTheme" parent="@style/Theme.AppCompat.Dialog">
         <item name="windowNoTitle">true</item>
