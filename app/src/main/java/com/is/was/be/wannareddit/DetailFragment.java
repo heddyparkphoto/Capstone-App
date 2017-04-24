@@ -95,7 +95,9 @@ public class DetailFragment extends Fragment {
         mediaButton= (ImageButton) rootView.findViewById(R.id.media_control);
 
         // this view that contains the image to be animated.  It is referred by the DetailActivity.
-        scrollImageContainer = (ScrollView) rootView.findViewById(R.id.scroll_image);
+        if (rootView.findViewById(R.id.scroll_image)!=null) {
+            scrollImageContainer = (ScrollView) rootView.findViewById(R.id.scroll_image);
+        }
 
 //        timelineView = (TextView) rootView.findViewById(R.id.timeline);
 //        authorView = (TextView) rootView.findViewById(R.id.author_by);

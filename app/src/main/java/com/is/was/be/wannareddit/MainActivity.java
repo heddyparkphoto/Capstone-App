@@ -133,9 +133,10 @@ public class MainActivity extends AppCompatActivity
         // initialize to set the mAdapter to our spinner
         loadSpinner();
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(SPIN_TO_POSITION)){
+        if (savedInstanceState != null) {// && savedInstanceState.containsKey(SPIN_TO_POSITION)){
             mSpinnerIdx = savedInstanceState.getInt(SPIN_TO_POSITION);
             mCurrentSubredditChoice = savedInstanceState.getString(BROWSING_SUBNAME);
+            Log.d(TAG, "We have savedInstanceState!");
         } else {
             SharedPreferences shared = getDefaultSharedPreferences(this);
             mCurrentSubredditChoice = shared.getString(getString(R.string.pref_subrdd_key), "DEFAULT");
@@ -393,19 +394,23 @@ public class MainActivity extends AppCompatActivity
         // Load data into the Spinner
         mAdapter.swapCursor(data);
         mCursor = data;
-        SharedPreferences shared = getDefaultSharedPreferences(this);
-        String prefSub = shared.getString(getString(R.string.pref_subrdd_key), "DEFAULT");
-        Log.d(TAG, "onLoadFinished: Pref Sub name is: " + prefSub);
-        String s;
-        int idx = 0;
-        while (mCursor.moveToNext()) {
-            s = mCursor.getString(1);
-            if (prefSub.equalsIgnoreCase(s)){
-                mSpinnerIdx = idx;
-                break;
+
+        if (mSpinnerIdx == Spinner.INVALID_POSITION) {
+            SharedPreferences shared = getDefaultSharedPreferences(this);
+            String prefSub = shared.getString(getString(R.string.pref_subrdd_key), "DEFAULT");
+            Log.d(TAG, "onLoadFinished: Pref Sub name is: " + prefSub);
+            String s;
+            int idx = 0;
+            while (mCursor.moveToNext()) {
+                s = mCursor.getString(1);
+                if (prefSub.equalsIgnoreCase(s)) {
+                    mSpinnerIdx = idx;
+                    break;
+                }
+                idx++;
             }
-            idx++;
         }
+
         placeSubredditCurrent();
     }
 
@@ -455,7 +460,7 @@ public class MainActivity extends AppCompatActivity
 
         if (mSpinnerIdx != Spinner.INVALID_POSITION){
             outState.putInt(SPIN_TO_POSITION, mSpinnerIdx);
-            Log.d(TAG, "saving position: " + mSpinnerIdx);
+            Log.d(TAG, "saving position: " + mSpinnerIdx + " " + mCurrentSubredditChoice);
             outState.putString(BROWSING_SUBNAME, mCurrentSubredditChoice);
         }
         super.onSaveInstanceState(outState);
