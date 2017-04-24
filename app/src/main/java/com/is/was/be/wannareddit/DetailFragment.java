@@ -285,7 +285,10 @@ public class DetailFragment extends Fragment {
                 if (mFragPost.getThumburl() != null && !mFragPost.getThumburl().isEmpty()) {
                     Picasso.with(getActivity()).load(mFragPost.getThumburl()).into(postImage);
                 } else {
-                    scrollImageContainer.setVisibility(View.GONE);
+                    // layout for landscape does not have this Scrollview
+                    if (scrollImageContainer!=null) {
+                        scrollImageContainer.setVisibility(View.GONE);
+                    }
                     postImage.setVisibility(View.GONE);
                 }
 

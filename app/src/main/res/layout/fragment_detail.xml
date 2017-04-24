@@ -49,11 +49,11 @@
         <ImageView
             android:id="@+id/post_image"
             android:layout_width="400dp"
-            android:layout_height="400dp"
+            android:layout_height="200dp"
             android:layout_gravity="center"
 
             android:adjustViewBounds="true"
-            android:scaleType="fitEnd"
+            android:scaleType="fitStart"
         />
     </ScrollView>
 
