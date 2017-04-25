@@ -158,7 +158,7 @@ public class SubredditActivity extends AppCompatActivity
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         return new CursorLoader(this, ForRedditProvider.MainContract.CONTENT_URI,
-                null, null, null, null);
+                null, null, null, DataUtility.sortOrder);
     }
 
     @Override
