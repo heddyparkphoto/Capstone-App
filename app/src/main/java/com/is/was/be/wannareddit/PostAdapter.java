@@ -147,6 +147,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             // image
             Picasso.with(mContext).load(post.getThumburl()).into(holder.thumbnailView);
         } else {
+            holder.thumbnailView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             Log.w(TAG, "No thumb image url this post!");
         }
         holder.postId = post.getPostId();

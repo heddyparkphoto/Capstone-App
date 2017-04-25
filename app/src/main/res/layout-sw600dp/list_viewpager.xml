@@ -8,7 +8,7 @@
               android:layout_marginEnd="16dp"
               android:baselineAligned="false"
               android:divider="?android:attr/dividerHorizontal"
-              android:orientation="horizontal"
+              android:orientation="vertical"
               android:showDividers="middle"
               tools:context="com.is.was.be.wannareddit.MainActivity">
 
@@ -17,9 +17,9 @@
 
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/container"
-        android:layout_width="@dimen/item_width"
-        android:layout_height="match_parent"
-
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:name="com.is.was.be.wannareddit.MainPagerFragment"
         tools:context="com.is.was.be.wannareddit.MainActivity"
         tools:listitem="@layout/one_post"
@@ -35,56 +35,54 @@
             android:paddingBottom="4dp" />
     </android.support.v4.view.ViewPager>
 
-
-
-
     <FrameLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_weight="1"
-        android:layout_height="match_parent">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/detailcontainer_fragment"
-        />
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         >
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:orientation="horizontal"
-            android:paddingStart="24dp"
+            android:layout_height="match_parent"
+            android:id="@+id/detailcontainer_fragment"
+            />
 
-            android:background="@color/colorPrimary"
-
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
             >
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:id="@+id/timeline"
-                android:text="20 minutes ago"
-                />
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:id="@+id/comments_num"
-                android:text="5 comments"
-                />
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:id="@+id/author_by"
-                android:text="wannaauthor"
-                />
-        </LinearLayout>
-    </FrameLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:orientation="horizontal"
+                android:paddingStart="24dp"
+
+                android:background="@color/colorPrimary"
+
+                >
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/timeline"
+                    android:text="20 minutes ago"
+                    />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/comments_num"
+                    android:text="5 comments"
+                    />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/author_by"
+                    android:text="wannaauthor"
+                    />
+            </LinearLayout>
+        </FrameLayout>
     </FrameLayout>
 </LinearLayout>

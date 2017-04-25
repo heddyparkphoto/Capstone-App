@@ -275,7 +275,7 @@ public class DetailFragment extends Fragment {
             if (mFragPost != null) {
                 postTitle.setText(mFragPost.getPostTitleLarge());
                 if (mFragPost.getUserUrl() != null) {
-                    postTitle.setTextColor(getResources().getColor(R.color.wr_a400));
+                    postTitle.setTextColor(getResources().getColor(R.color.linkcolor));
                     postTitle.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -312,7 +312,7 @@ public class DetailFragment extends Fragment {
                 if (mFragPost.getThumburl() != null && !mFragPost.getThumburl().isEmpty()) {
                     Picasso.with(getActivity()).load(mFragPost.getThumburl()).into(postImage);
                 } else {
-                    // layout for landscape does not have this Scrollview
+//                     layout for landscape does not have this Scrollview
                     if (scrollImageContainer!=null) {
                         scrollImageContainer.setVisibility(View.GONE);
                     }

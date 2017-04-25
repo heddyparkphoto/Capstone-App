@@ -24,6 +24,7 @@
     <color name="black">#000000</color>
     <color name="offblack">#bb000000</color>
 
+    <color name="linkcolor">#0000ff</color>
 
     <color name="wr_100">#C5CAE9</color>
     <color name="wr_a200">#536DFE</color>
