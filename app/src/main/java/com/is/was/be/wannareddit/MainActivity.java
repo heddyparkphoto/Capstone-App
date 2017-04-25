@@ -108,6 +108,10 @@ public class MainActivity extends AppCompatActivity
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
     private boolean mTwoPane;
 
+    // TwoPane-mode views
+    public TextView ma_timelineView;
+    public TextView ma_authorView;
+    public TextView ma_numberOfCommentsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,6 +173,10 @@ public class MainActivity extends AppCompatActivity
 
         if (findViewById(R.id.detailcontainer_fragment) != null){
             mTwoPane = true;
+
+            ma_timelineView = (TextView) findViewById(R.id.timeline);
+            ma_authorView = (TextView) findViewById(R.id.author_by);
+            ma_numberOfCommentsView = (TextView) findViewById(R.id.comments_num);
 
             if (savedInstanceState == null) {
                 DetailFragment df = new DetailFragment();
@@ -528,6 +536,18 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.detailcontainer_fragment, df, DETAILFRAGMENT_TAG)
                     .addToBackStack(null)
                     .commit();
+
+            if (post!=null){
+                if (post.createdUtcTime != 0L) {
+                    ma_timelineView.setText(DataUtility.getDate(post.createdUtcTime));
+                } else {
+                    ma_timelineView.setText(Long.toString(post.createdUtcTime));
+                }
+
+                ma_authorView.setText("by " + post.author);
+                ma_numberOfCommentsView.setText(String.valueOf(post.numComments) + " Comments/Threads");
+            }
+
         } else {
             Intent intent = new Intent(this, DetailActivity.class);
 

@@ -1,6 +1,7 @@
 package com.is.was.be.wannareddit;
 
 import android.animation.Animator;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.is.was.be.wannareddit.data.DataUtility;
 import com.is.was.be.wannareddit.service.FetchDetailAsyncTask;
 import com.is.was.be.wannareddit.service.FetchPostAsyncTask;
 import com.squareup.picasso.Picasso;
@@ -217,6 +219,27 @@ public class DetailFragment extends Fragment {
                 if (mFragPost!=null){
                     mSubrdd = mFragPost.getPostSubreddit();
                     mPostId = mFragPost.getPostId();
+
+                    // Populate the view's in the TwoPane layout for First-launched default post
+                    Activity ma = getActivity();
+                    // Verify it's the MainActivity which began this fragment
+                    if (ma instanceof MainActivity){
+
+                        TextView timeView = ((MainActivity) ma).ma_timelineView;
+                        TextView authorView = ((MainActivity) ma).ma_authorView;
+                        TextView numberView = ((MainActivity) ma).ma_numberOfCommentsView;
+
+                        if (timeView!=null){
+                            if (mFragPost.createdUtcTime != 0L){
+                                timeView.setText(DataUtility.getDate(mFragPost.createdUtcTime));
+                            } else {
+                                timeView.setText(Long.toString(mFragPost.createdUtcTime));
+                            }
+                        }
+
+                        authorView.setText("by " + mFragPost.author);
+                        numberView.setText(String.valueOf(mFragPost.numComments) + " Comments/Threads");
+                    }
                 }
             } else {
                 Log.e(TAG, "Post for TwoPane didn't return.");
