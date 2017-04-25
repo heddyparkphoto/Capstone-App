@@ -18,7 +18,7 @@
     <dimen name="widget_left_padding">12dp</dimen>
     <dimen name="widget_left_padding_big">40dp</dimen>
     <dimen name="widget_post_height">200dp</dimen>
-    <dimen name="item_width">200dp</dimen>
+    <dimen name="item_width">350dp</dimen>
     <dimen name="init_scroll_up_distance">400dp</dimen>
 
 </resources>

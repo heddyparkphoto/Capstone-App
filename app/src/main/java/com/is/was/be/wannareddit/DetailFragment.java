@@ -36,8 +36,8 @@ public class DetailFragment extends Fragment {
 
     public static final String PARCEL_ON_ARG = "PARCEL_ON_ARG";
     public static final String GET_POST_ARG = "GET_POST_ARG";
-
     public static final String EXTRA_ON_INTENT = "EXTRA_ON_INTENT";
+    public static final String PARCEL_SAVED_STATE = "PARCEL_SAVED_STATE";
 
     private final String TAG = DetailFragment.class.getSimpleName();
 
@@ -158,6 +158,10 @@ public class DetailFragment extends Fragment {
 //            }
 //        }
 
+        if (savedInstanceState!=null){
+            MainPost testpost = savedInstanceState.getParcelable(PARCEL_SAVED_STATE);
+            Log.d(TAG, "test...");
+        }
 
         Intent intent = getActivity().getIntent();
         if (null != intent && intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT) != null) {
@@ -329,5 +333,12 @@ public class DetailFragment extends Fragment {
         }
 
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        outState.putParcelable(PARCEL_SAVED_STATE, mFragPost);
+        super.onSaveInstanceState(outState);
     }
 }
