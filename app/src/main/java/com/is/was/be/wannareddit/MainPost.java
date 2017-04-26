@@ -23,9 +23,10 @@ public class MainPost implements Parcelable {
 
     // vars for more info
     String thumburl;
-    String userUrl;   // "url" for now sometimes a website, sometimes a media seems to play in the Web browser.
+    String userUrl;
 
-    int media;          // 1 if video can be played, -1 if not
+    // Flag for use
+    private int media;          // 1 if video can be played, -1 if not
 
     public MainPost(){
         super();
@@ -44,7 +45,7 @@ public class MainPost implements Parcelable {
         // main content
         postTitleLarge = in.readString();
 
-        // for more
+        // for more info
         thumburl = in.readString();
         userUrl = in.readString();
         media = in.readInt();

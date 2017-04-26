@@ -16,6 +16,7 @@ import com.is.was.be.wannareddit.service.FetchPostAsyncTask;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -41,6 +42,8 @@ public class MainPagerFragment extends Fragment {
 
     @BindView (R2.id.recyclerview_post_empty) TextView emptyView;
     @BindView (R2.id.recyclerview_post) RecyclerView mRecylerView;
+    @BindString(R2.string.default_subreddit) String placeholderSubnm;
+
     private Unbinder unbinder;
 
     private PostAdapter mPostAdapter;
@@ -120,9 +123,7 @@ public class MainPagerFragment extends Fragment {
             cat = mCategory;
         }
 
-
-
-        String subnm = "todayilearned";     // Default subreddit, overwrite when avail
+        String subnm = placeholderSubnm;     // Default subreddit, overwrite when avail
         if (mSubName!=null){
             subnm = mSubName;
         }
@@ -143,8 +144,7 @@ public class MainPagerFragment extends Fragment {
         /*
             DetailFragment Callback when an item is selected
          */
-        public void OnPostItemClick(MainPost passinPost);
-
+        void OnPostItemClick(MainPost passinPost);
     }
 
     @Override

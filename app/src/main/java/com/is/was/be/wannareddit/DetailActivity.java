@@ -67,7 +67,6 @@ public class DetailActivity extends AppCompatActivity {
             DetailFragment df = new DetailFragment();
             df.setArguments(args);
             getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.detailcontainer, df)
                     .add(R.id.detailcontainer_fragment, df, FRAG_TAG)
                     .commit();
         }
@@ -78,11 +77,11 @@ public class DetailActivity extends AppCompatActivity {
             } else {
                 da_timelineView.setText(Long.toString(mMainPost.createdUtcTime));
             }
-Log.d(TAG, " i am a new code in detail");
             da_authorView.setText(String.format(srBy, mMainPost.author));
             da_numberOfCommentsView.setText(String.format(srNumComments, mMainPost.numComments));
         }
     }
+
     private void runExtra(String mysubname, String mypostId) {
         // Fetch data using AsyncTask - we'll only get one MainPost in the form of a list
         ArrayList<MainPost> posts = null;
@@ -99,13 +98,10 @@ Log.d(TAG, " i am a new code in detail");
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "" + e);
         }
-
-
-
     }
 
     /*
-        Instructive Motion applied to the small Image area to help user the image can be scrolled
+        Instructive Motion applied to the small Image area to show user that image can be scrolled
      */
     @Override
     public void onEnterAnimationComplete() {

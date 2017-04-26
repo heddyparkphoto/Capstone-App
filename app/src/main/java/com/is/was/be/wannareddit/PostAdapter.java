@@ -2,7 +2,6 @@ package com.is.was.be.wannareddit;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,9 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by hyeryungpark on 4/4/17.
@@ -33,9 +35,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     public class PostViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView thumbnailView;
-        TextView postTextView;
-
+        @BindView(R2.id.thumbnail) ImageView thumbnailView;
+        @BindView(R2.id.post_title) TextView postTextView;
         /*
             non-view fields, postId and subname are required to fetch detail json request
             other fields are used for Detail UI so that json parsing for the Detail can be
@@ -54,8 +55,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         public PostViewHolder(View view) {
             super(view);
 
-            thumbnailView = (ImageView) view.findViewById(R.id.thumbnail);
-            postTextView = (TextView) view.findViewById(R.id.post_title);
+            ButterKnife.bind(this, view);
+
             subname = "";
             postId = "";
             author = "";
@@ -72,7 +73,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         @Override
         public void onClick(View view) {
-            int adapterPosition = getAdapterPosition();
             mClickHandler.handleOnClick(subname, postId, this);
         }
     }
@@ -112,7 +112,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         if (parent instanceof RecyclerView) {
 
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.one_post, parent, false); // Also context from the ViewGroup
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.one_post, parent, false);
 
             view.setFocusable(true);
 
@@ -125,18 +125,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public void onBindViewHolder(PostViewHolder holder, int position) {
-        /*
-            Weirdest problem I have caused at first - the postiton would only be 0
-            displaying a single item ever...
-            From stackoverflow googling - answers to 2 same problems were - one_post.xml
-            outermost Layout was the LinearLayout height was the 'match_parent'
-            should be wrap_content or other dimen but never the match_parent ...
-            I guess the LayoutManager that we set on the RecyclerView at first, knows it does not
-            need to layout any more children than just once !!! what a weird but clear
-            management !!! most efficient :)
-            I'm glad I tried their answers - learned that solution sometimes is much easier
-            than the problem.. :)
-         */
 
         MainPost post = null;
         if (mPostList!=null && mPostList.size() > position){
@@ -147,8 +135,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             // image
             Picasso.with(mContext).load(post.getThumburl()).into(holder.thumbnailView);
         } else {
-            holder.thumbnailView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            Log.w(TAG, "No thumb image url this post!");
+            holder.thumbnailView.setScaleType(ImageView.ScaleType.FIT_CENTER);  // Smaller scale set for the placeholder image
         }
         holder.postId = post.getPostId();
         holder.subname = post.getPostSubreddit();

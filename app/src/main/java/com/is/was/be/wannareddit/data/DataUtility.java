@@ -11,11 +11,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -35,6 +33,10 @@ public class DataUtility {
 
     // DB sortOrder
     public static final String sortOrder = ListColumns.SUBREDDITNAME + " ASC ";
+
+    // Flag value indicator used for multiple classes
+    public static final int AVAIL_INT = 1;
+    public static final int NOT_AVAIL_INT = -1;
 
     private final static String TAG = "DataUtility";
 
@@ -92,29 +94,6 @@ public class DataUtility {
         return builder.build();
     }
 
-    public static long convertToTimeAgo(long crUtc, long crLocal) {
-//
-//        long nowSeconds = System.currentTimeMillis()/1000;
-//
-//        Log.d(TAG, "now "+ nowSeconds + " crUtc " +crUtc + "    lapsed    " + (nowSeconds - crUtc));
-//        Log.d(TAG, "local "+ nowSeconds + " crLocal " +crLocal + " lapsed " + (nowSeconds - crLocal));
-//
-//
-//
-        return 0L;
-    }
-
-    public static String convertToDateFormat(long utcMillis){
-
-        Date date = new Date(utcMillis);
-        String str = DateFormat.getDateInstance().format(date);
-        Log.d(TAG, "utc "+ utcMillis + " our date " + str);
-
-        return DateFormat.getDateInstance().format(date);
-
-        //return "12-30-2017";
-    }
-
     public static String getDate(long utcMillis) {
         // Create a DateFormatter object for displaying date in specified format.
         String dateFormat = "MM/dd/ HH:mm";
@@ -123,9 +102,7 @@ public class DataUtility {
         // Create a calendar object that will convert the date and time value in milliseconds to date.
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(utcMillis*1000);
-        String str = formatter.format(calendar.getTime());
 
-        Log.d(TAG, "utc "+ utcMillis + " our date " + str);
         return formatter.format(calendar.getTime());
     }
 

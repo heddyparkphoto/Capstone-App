@@ -70,10 +70,6 @@ public class SubredditActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-
-
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
         mSubAdapter = new SubredditAdapter(this, emptyTxtView);
@@ -92,12 +88,11 @@ public class SubredditActivity extends AppCompatActivity
                             @Override
                             public void onInput(MaterialDialog dialog, CharSequence input) {
                                 final String passedInInput = input.toString();
-//                                String confirmStr = String.format(addSuccessMsgIncomplete, passedInInput);
-//                                Toast.makeText(mContext, confirmStr, Toast.LENGTH_SHORT).show();
-//                                // Receive user input. Make sure the subreddit doesn't already exist
-//                                // in the DB and proceed accordingly - our DB is case-sensitive we'll keep as user types in
-//                                // keep duplicates as well - it won't be a huge collection anyhow - they're not case-sensitive on reddit
-//
+                                /*
+                                    Receive user input. Make sure the subreddit doesn't already exist
+                                    in the DB - our DB keeps the case-sensitive way as user types in and keep duplicate as well
+                                    - it won't be a huge collection and they're not case-sensitive on reddit either
+                                */
                                 Cursor c = mContext.getContentResolver().query(ForRedditProvider.MainContract.CONTENT_URI,
                                         new String[]{ListColumns.SUBREDDITNAME}, ListColumns.SUBREDDITNAME + "= ?",
                                         new String[]{passedInInput}, null);
@@ -150,7 +145,6 @@ public class SubredditActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
-
         super.onResume();
     }
 
@@ -205,8 +199,6 @@ public class SubredditActivity extends AppCompatActivity
             mCursor.moveToPosition(position);
             int colIx = mCursor.getColumnIndex(SUBREDDITNAME);
             holder.nameView.setText(mCursor.getString(colIx));
-
-            // what todo with the button??
         }
 
         @Override
@@ -242,11 +234,6 @@ public class SubredditActivity extends AppCompatActivity
             super(view);
 
             ButterKnife.bind(this, view);
-            if (rmButton==null){
-                Log.w(VH_TAG, "NULL111");
-            } else {
-                Log.w(VH_TAG, "VIEW Hold seems to work...");
-            }
 
             rmButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -261,7 +248,6 @@ public class SubredditActivity extends AppCompatActivity
                         toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                         toast.show();
                     } else {
-                        rmConfStr = String.format(getResources().getString(R.string.a11y_remove_confirm), thisname);
                         // get the subreddit name from this passedin button's accompanying nameView.getText()
                         int checksum = mContext.getContentResolver().delete(
                                 ForRedditProvider.MainContract.CONTENT_URI,
@@ -273,7 +259,7 @@ public class SubredditActivity extends AppCompatActivity
                             toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                             toast.show();
                         } else {
-                            rmConfStr = "Remove Db error-Deleted row num returned: " + checksum;
+                            rmConfStr = "Failed removing a subreddit from Database returned: " + checksum;
                             Log.e(VH_TAG, rmConfStr);
                         }
                     }

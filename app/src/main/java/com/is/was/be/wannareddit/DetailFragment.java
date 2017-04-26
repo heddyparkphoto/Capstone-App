@@ -1,6 +1,5 @@
 package com.is.was.be.wannareddit;
 
-import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -75,16 +74,6 @@ public class DetailFragment extends Fragment {
     // Comment text ArrayAdapter
     ArrayAdapter<String> mCommentAdapter;
 
-    // Zoom Image
-    // Hold a reference to the current animator,
-    // so that it can be canceled mid-way.
-    private Animator mCurrentAnimator;
-
-    // The system "short" animation time duration, in milliseconds. This
-    // duration is ideal for subtle animations or animations that occur
-    // very frequently.
-    private int mShortAnimationDuration;
-
     public DetailFragment(){
 
     }
@@ -97,83 +86,13 @@ public class DetailFragment extends Fragment {
 
         unbinder = ButterKnife.bind(this, rootView);
 
-//        postTitle = (TextView) rootView.findViewById(R.id.post_title_text);
-//        postImage = (ImageView) rootView.findViewById(R.id.post_image);
-//        mListView = (ListView) rootView.findViewById(R.id.listview_comments);
-//        mEmptyView= (TextView) rootView.findViewById(R.id.recyclerview_comments_empty);
-//        mediaButton= (ImageButton) rootView.findViewById(R.id.media_control);
-
         // this view that contains the image to be animated.  It is referred by the DetailActivity.
         if (rootView.findViewById(R.id.scroll_image)!=null) {
             scrollImageContainer = (ScrollView) rootView.findViewById(R.id.scroll_image);
         }
 
-//        timelineView = (TextView) rootView.findViewById(R.id.timeline);
-//        authorView = (TextView) rootView.findViewById(R.id.author_by);
-//        numberOfCommentsView = (TextView) rootView.findViewById(R.id.comments_num);
-
-        //&&&&&&&&&&&&&&&&&&&&&&&&&&
-//        mScrollingFrm = (FrameLayout) rootView.findViewById(R.id.scrolling_frameL);
-//        mOffLayout = (LinearLayout) rootView.findViewById(R.id.off_view);
-
-
-//        ButterKnife.bind(getActivity());
-
-//        if (mScrollingFrm!=null) {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // Solution video has this line
-//
-//                mListView.setOnScrollListener(new ListView.OnScrollListener() {
-//
-//                    @Override
-//                    public void onScrollStateChanged(AbsListView absListView, int scrollMotion) {
-//
-//                        if (SCROLL_STATE_TOUCH_SCROLL==scrollMotion) {
-//                            float barTransY = mScrollingFrm.getTranslationY();
-//                            int barMax = mScrollingFrm.getHeight(); // handle 0 as a max TranslationY
-//                            int topPortionHeight = 400;     // We know this is the height of the top part that can be used
-//                            float barY;
-//                            if (barMax > 200) {
-//                                barY = 200;
-////                                barY = Math.max(-barMax, barTransY - dy / 2);
-//                            } else {
-////                                barY = Math.min(0, barTransY - dy / 2);
-//                                barY = 100;
-//                            }
-//
-//                            final int startScrollPos = 300; //400;
-////                                    getResources().getDimensionPixelSize("100dp");
-////                                            R.dimen.init_scroll_up_distance);
-//                            Animator animator = ObjectAnimator.ofInt(
-////                                    mListView,
-////                                    mScrollingFrm,
-//                                    mOffLayout,
-//                                    "scrollY",
-//                                    startScrollPos
-//                            ).setDuration(300);
-//
-//                            animator.start();
-////                            mScrollingFrm.setTranslationY(barY);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-//                        Log.d(TAG, "debug stop");
-//                    }
-//
-//                });
-//            }
-//        }
-
-        if (mediaButton==null){
-            Log.w(TAG, "Bind view problem??");
-        } else {
-            Log.w(TAG, "Bind view - ORKED MAYBE");
-        }
-
         if (savedInstanceState!=null){
             MainPost testpost = savedInstanceState.getParcelable(PARCEL_SAVED_STATE);
-            Log.d(TAG, "test...");
         }
 
         Intent intent = getActivity().getIntent();
@@ -184,13 +103,6 @@ public class DetailFragment extends Fragment {
                 mSubrdd = mFragPost.getPostSubreddit();
                 mPostId = mFragPost.getPostId();
             }
-//        } else if (intent.getStringExtra(POSTID)!=null){
-//
-//            // Case of: Widget FillInIntent - Request AsyncTask to populate the rest of fields and construct a MainPost
-//            runExtra(intent.getStringExtra(SUBNAME), intent.getStringExtra(POSTID));
-//            mPostId = intent.getStringExtra(POSTID);
-//            mSubrdd = intent.getStringExtra(SUBNAME);
-//
         } else {
             if (getArguments() != null) {
                 Bundle args = getArguments();
@@ -303,7 +215,7 @@ public class DetailFragment extends Fragment {
                         }
                     });
                 }
-                if (mFragPost.getMedia() ==1){
+                if (mFragPost.getMedia() == DataUtility.AVAIL_INT){
                     mediaButton.setVisibility(View.VISIBLE);
                     mediaButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -315,7 +227,6 @@ public class DetailFragment extends Fragment {
                             } else {
                                 Log.w(TAG, "No app found to open the site: " + mFragPost.getUserUrl());
                             }
-
                         }
                     });
                 } else {
@@ -331,15 +242,6 @@ public class DetailFragment extends Fragment {
                     }
                     postImage.setVisibility(View.GONE);
                 }
-
-//                if (mFragPost.createdUtcTime != 0L) {
-//                    timelineView.setText(DataUtility.getDate(mFragPost.createdUtcTime));
-//                } else {
-//                    timelineView.setText(Long.toString(mFragPost.createdUtcTime));
-//                }
-//
-//                authorView.setText("by " + mFragPost.author);
-//                numberOfCommentsView.setText(String.valueOf(mFragPost.numComments) + " Comments");
             }
         } catch (InterruptedException | ExecutionException e){
             Log.e(TAG, "" + e);

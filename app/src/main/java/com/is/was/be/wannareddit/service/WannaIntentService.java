@@ -48,10 +48,7 @@ public class WannaIntentService extends IntentService {
 
         // Activity would like to handle the result if "add" operation fails
         if (receiver!=null) {
-//            if (result == SubredditActivity.UNKNOWN_SUBREDDIT) {
-//                bundle.putString(Intent.EXTRA_TEXT, "subreddit not found");
                 receiver.send(result, bundle);
-//            }
         }
     }
  }

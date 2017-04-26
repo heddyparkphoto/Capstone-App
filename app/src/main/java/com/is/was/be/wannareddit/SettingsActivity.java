@@ -53,7 +53,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     protected boolean isValidFragment(String fragmentName) {
 
-        // We only have one Preference for this version of the app
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || GeneralPreferenceFragment.class.getName().equals(fragmentName);
     }
@@ -134,10 +133,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             localPref.setEntries(entries);
             localPref.setEntryValues(savedValues);
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
             bindPreferenceToValue(localPref);
             // TimeFence Preference
             ListPreference tfPref = (ListPreference) findPreference(getString(R.string.pref_timefence_key));

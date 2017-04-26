@@ -55,8 +55,6 @@ public class FetchDetailAsyncTask extends AsyncTask <String, Void, ArrayList<Str
                 .appendPath("comments")
                 .appendPath(postId.concat(".json"));
 
-        Log.d(TAG, "new 2 VERIFY: "+ builder.build().toString());
-
         String getResponse;
 
         JSONObject jsonObject = null;
@@ -111,18 +109,12 @@ public class FetchDetailAsyncTask extends AsyncTask <String, Void, ArrayList<Str
 
                             JSONObject commentObj = postJo.getJSONObject("data");
                             String aComment = commentObj.getString("body");
-                            // Later in the view, |created_utc| value will be tokenized and becomes the time line of this comment
 
                             long crUtc = commentObj.getLong("created_utc");
                             long crLocal = commentObj.getLong("created");
-
-//                            DataUtility.convertToTimeAgo(crUtc, crLocal);
-//                            DataUtility.convertToDateFormat(crUtc);
                             String dateStr = DataUtility.getDate(crUtc);
 
                             aComment += " | created " + dateStr + " |";
-
-
 
                             returnList.add(aComment);
                         }

@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.is.was.be.wannareddit.MainPost;
+import com.is.was.be.wannareddit.data.DataUtility;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -65,7 +66,7 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
         }
 
 
-        // completed url example - mainApp: "https://www.reddit.com/r/todayilearned/hot.json?limit=25"
+        // url example - mainApp: "https://www.reddit.com/r/todayilearned/hot.json?limit=25"
         // url example - widget item: "https://www.reddit.com/r/technology/6622rb.json?limit=1"
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https")
@@ -74,8 +75,6 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
                 .appendPath(subreddit)
                 .appendPath( ((mainApp || supportTwoPane)? category : postIdExtra ).concat(".json"))
                 .appendQueryParameter("limit", limitPerApp);
-
-        Log.d(TAG, "VERIFY: "+ builder.build().toString());
 
         String getResponse;
 
@@ -101,7 +100,6 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
         }
 
         return parsePostData(jsonObject);
-
     }
 
     private ArrayList<MainPost> parsePostData(JSONObject jo){
@@ -141,13 +139,13 @@ public class FetchPostAsyncTask extends AsyncTask<String, Void, ArrayList<MainPo
                                 JSONObject oembedObj = mediaData.getJSONObject("oembed");
                                 if (oembedObj.getString("type") != null &&
                                         oembedObj.getString("type").equalsIgnoreCase("video")) {
-                                    po.setMedia(1);
+                                    po.setMedia(DataUtility.AVAIL_INT); // flag used for the DetailFragment to show the play icon
                                 } else {
-                                    po.setMedia(-1);
+                                    po.setMedia(DataUtility.NOT_AVAIL_INT); // flag for the DetailFragment to hide it
                                 }
                             } catch (JSONException ex){
                                 Log.e(TAG, "media parsing "+ ex);
-                                po.setMedia(-1);
+                                po.setMedia(DataUtility.NOT_AVAIL_INT);  // flag for the DetailFragment to hide it
                             }
 
                             returnList.add(po);
