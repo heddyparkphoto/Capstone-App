@@ -15,21 +15,30 @@ import com.is.was.be.wannareddit.service.FetchPostAsyncTask;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class DetailActivity extends AppCompatActivity {
     private static final String TAG = DetailActivity.class.getSimpleName();
     public static final String SUBNAME = "SUBNAME";
     public static final String POSTID = "POSTID";
     private static final String FRAG_TAG="FRAG_TAG";
 
-    TextView da_timelineView;
-    TextView da_authorView;
-    TextView da_numberOfCommentsView;
+    @BindView (R2.id.timeline) TextView da_timelineView;
+    @BindView (R2.id.author_by) TextView da_authorView;
+    @BindView (R2.id.comments_num) TextView da_numberOfCommentsView;
+    @BindString(R2.string.a11y_num_comments) String srNumComments;
+    @BindString(R2.string.a11y_by_who) String srBy;
+
     MainPost mMainPost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        ButterKnife.bind(this);
 
         if (savedInstanceState == null) {
             mMainPost = null;
@@ -63,19 +72,15 @@ public class DetailActivity extends AppCompatActivity {
                     .commit();
         }
 
-        da_timelineView = (TextView) findViewById(R.id.timeline);
-        da_authorView = (TextView) findViewById(R.id.author_by);
-        da_numberOfCommentsView = (TextView) findViewById(R.id.comments_num);
-
         if (mMainPost!=null){
             if (mMainPost.createdUtcTime != 0L) {
                 da_timelineView.setText(DataUtility.getDate(mMainPost.createdUtcTime));
             } else {
                 da_timelineView.setText(Long.toString(mMainPost.createdUtcTime));
             }
-
-            da_authorView.setText("by " + mMainPost.author);
-            da_numberOfCommentsView.setText(String.valueOf(mMainPost.numComments) + " Comments/Threads");
+Log.d(TAG, " i am a new code in detail");
+            da_authorView.setText(String.format(srBy, mMainPost.author));
+            da_numberOfCommentsView.setText(String.format(srNumComments, mMainPost.numComments));
         }
     }
     private void runExtra(String mysubname, String mypostId) {

@@ -54,6 +54,7 @@ import com.is.was.be.wannareddit.service.WannaTaskService;
 
 import java.util.ArrayList;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -71,20 +72,24 @@ public class MainActivity extends AppCompatActivity
 
     // Play service variables
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private static final String SPIN_TO_POSITION = "SPIN_TO_POSITION";
-    private static final String BROWSING_SUBNAME = "BROWSING_SUBNAME";
     protected GoogleApiClient mGoogleApiClient;
     // Declare variables for pending intent and fence receiver.
     private final static String FENCE_RECIEVER_ACTION = "FENCE_RECIEVER_ACTION";
+    private final static String FENCE_KEY = "timeFenceKey";
     private PendingIntent myPendingIntent;
     private MyFenceReceiver myFenceReceiver;
-    AwarenessFence mTimeFence;
+    private AwarenessFence mTimeFence;
     private long mPrefTimeFenceMinutes;
+    private long FENCE_NEVER = 999L;
 
     @BindView(R2.id.main_content) CoordinatorLayout mCoorLayout;
     @BindView(R2.id.toolbar) Toolbar toolbar;
     @BindView(R2.id.subrddt_spinner) Spinner spinner;
     @BindView(R2.id.container) ViewPager mViewPager;   //The {@link ViewPager} that will host the section contents.
+    @BindString(R2.string.pref_subrdd_key) String mPrefSubrddKey;
+    @BindString(R2.string.a11y_num_comments) String srNumComments;
+    @BindString(R2.string.a11y_by_who) String srBy;
+
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -96,19 +101,21 @@ public class MainActivity extends AppCompatActivity
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    // Subreddit table handlers
+    // Subreddit table handlers in the spinner
     private static final int LOADER_ID = 22;
     private SimpleCursorAdapter mAdapter;
     private Cursor mCursor;
     public String mCurrentSubredditChoice;
     private ArrayList<String> mSpinnerList;
-    private int mSpinnerIdx = Spinner.INVALID_POSITION;  // if cannot be set
+    private int mSpinnerIdx = Spinner.INVALID_POSITION;  // if there isn't a position
+    private static final String SPIN_TO_POSITION = "SPIN_TO_POSITION";
+    private static final String BROWSING_SUBNAME = "BROWSING_SUBNAME";
 
     // Following codes added during Tablet Lesson
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
     private boolean mTwoPane;
 
-    // TwoPane-mode views
+    // TwoPane-mode-only views - not present in other modes
     public TextView ma_timelineView;
     public TextView ma_authorView;
     public TextView ma_numberOfCommentsView;
@@ -124,9 +131,8 @@ public class MainActivity extends AppCompatActivity
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
         /*
-            Popping the spinner from cursor - Credit to this site: Thanks to:
+            Populating the spinner from cursor - Credit: Thanks to:
             http://codetheory.in/understanding-and-populating-android-spinners/
-            (A note about the site though, there is a ziggling AD to the right on this site)
          */
         mAdapter = new SimpleCursorAdapter(this,
                 R.layout.spinner_text_control,
@@ -137,39 +143,15 @@ public class MainActivity extends AppCompatActivity
         // initialize to set the mAdapter to our spinner
         loadSpinner();
 
-        if (savedInstanceState != null) {// && savedInstanceState.containsKey(SPIN_TO_POSITION)){
+        if (savedInstanceState != null) {
             mSpinnerIdx = savedInstanceState.getInt(SPIN_TO_POSITION);
             mCurrentSubredditChoice = savedInstanceState.getString(BROWSING_SUBNAME);
-            Log.d(TAG, "We have savedInstanceState!");
         } else {
             SharedPreferences shared = getDefaultSharedPreferences(this);
-            mCurrentSubredditChoice = shared.getString(getString(R.string.pref_subrdd_key), "DEFAULT");
-            Log.d(TAG, "NEW CREATE! noSaved instance!");
+            mCurrentSubredditChoice = shared.getString(mPrefSubrddKey, "");
         }
-
-
-//        placeSubredditCurrent();
-
-
-
-        /*
-        &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-        Widget stuff??
-         */
 
         MainPost post=null;
-        if (getIntent()!=null) {
-            Log.d(TAG, "MainActivity --");
-
-            Intent intent = getIntent();
-            if (intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT) != null) {
-                Log.d(TAG, "MainActivity --EXTRA_ON_INTENT");
-                Bundle bundle = intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT);
-                if (bundle.getParcelable(DetailFragment.PARCEL_ON_ARG) != null) {
-                    post = bundle.getParcelable(DetailFragment.PARCEL_ON_ARG);
-                }
-            }
-        }
 
         if (findViewById(R.id.detailcontainer_fragment) != null){
             mTwoPane = true;
@@ -186,7 +168,6 @@ public class MainActivity extends AppCompatActivity
                     df.setArguments(args);
                 } else {
                     Bundle args = new Bundle();
-                    Log.d(TAG, "Check subreddut: "+mCurrentSubredditChoice);
                     args.putStringArray(DetailFragment.GET_POST_ARG, new String[]{mCurrentSubredditChoice, "hot"});
                     df.setArguments(args);
                 }
@@ -198,8 +179,8 @@ public class MainActivity extends AppCompatActivity
             mTwoPane = false;
         }
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
+        // Create the adapter that will return a fragment for first two
+        // category sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Set up the ViewPager with the sections adapter.
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -214,15 +195,13 @@ public class MainActivity extends AppCompatActivity
         PeriodicTask periodicTask = new PeriodicTask.Builder()
                 .setService(WannaTaskService.class)
                 .setExtras(bundle)
-                .setUpdateCurrent(true)     // Read that this true ensures task is built if there's none
+                .setUpdateCurrent(true)     // Periodic task is built if there's none ensuring only one is built
                 .setFlex(10L)
-                .setPeriod(3600L)           // once per hour 60min*60sec = 3600 long type - test with 30L
-//                .setPeriod(60L)           // TEST - one minute!!!
+                .setPeriod(3600L)           // once per hour 60min*60sec = 3600 long type - Widget has option of refresh immediately
                 .setTag(DataUtility.PERIODIC_TAG)
                 .build();
         if (checkPlayServices()) {
             GcmNetworkManager.getInstance(this).schedule(periodicTask);
-            // and run once right away
         }
 
         // instantiate variables for AwarenessFence api
@@ -230,13 +209,8 @@ public class MainActivity extends AppCompatActivity
         myPendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
         myFenceReceiver = new MyFenceReceiver();
         registerReceiver(myFenceReceiver, new IntentFilter(FENCE_RECIEVER_ACTION));
-
-        // Googleclient builder build - must connect in onStart()
-        buildMyAwarenessGclient();
-        // Instantiate AwarenssFences
+        // Set configuration on the timefence
         buildMyAwarenessFence();
-
-
     }
 
     @Override
@@ -253,7 +227,6 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
 
@@ -272,7 +245,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (id == R.id.add) {
-            // Subreddit managing activity - Use Dialog
+            // Subreddit managing activity
             Intent intent = new Intent(this, SubredditActivity.class);
             startActivity(intent);
         }
@@ -286,12 +259,8 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences shared = getDefaultSharedPreferences(this);
         shared.registerOnSharedPreferenceChangeListener(this);
 
-        // STILL PROBLEM - WE DON'T WANT TO CHANGE if user is reading another subreddit when the device rotated
-        // FIX LATER!!!
-//        placeSubredditCurrent();
-
-        if (mPrefTimeFenceMinutes < 999L) {
-            registerFence("timeFenceKey");
+        if (mPrefTimeFenceMinutes < FENCE_NEVER) {
+            registerFence(FENCE_KEY);
         }
         super.onResume();
     }
@@ -301,13 +270,13 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(this);
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
 
-        unregisterFence("timeFenceKey");
+        unregisterFence(FENCE_KEY);
         super.onPause();
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        mCurrentSubredditChoice = sharedPreferences.getString(getString(R.string.pref_subrdd_key), "DEFAULT");
+        mCurrentSubredditChoice = sharedPreferences.getString(mPrefSubrddKey, "");
     }
 
     @Override
@@ -324,9 +293,9 @@ public class MainActivity extends AppCompatActivity
         super.onStop();
 
         try {
-            unregisterReceiver(myFenceReceiver);      // Error "not registered"
+            unregisterReceiver(myFenceReceiver);    // Exception "not registered" in some cases
         } catch (Exception allEx){
-            Log.e(TAG, ""+ allEx);  // Catch the exception until I find a way to peek 'registered' state
+            Log.e(TAG, ""+ allEx);  // Catch the exception for this version - Haven't found a way to peek 'registered' state.
         }
 
         if (mGoogleApiClient!=null && mGoogleApiClient.isConnected()){
@@ -367,7 +336,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.i(TAG, "GoogleApi connected!");
     }
 
     @Override
@@ -405,8 +373,8 @@ public class MainActivity extends AppCompatActivity
 
         if (mSpinnerIdx == Spinner.INVALID_POSITION) {
             SharedPreferences shared = getDefaultSharedPreferences(this);
-            String prefSub = shared.getString(getString(R.string.pref_subrdd_key), "DEFAULT");
-            Log.d(TAG, "onLoadFinished: Pref Sub name is: " + prefSub);
+            String prefSub = shared.getString(mPrefSubrddKey, "");
+
             String s;
             int idx = 0;
             while (mCursor.moveToNext()) {
@@ -438,9 +406,6 @@ public class MainActivity extends AppCompatActivity
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 mCurrentSubredditChoice = ((TextView) view).getText().toString();
                 mSpinnerIdx = position;
-//                Log.d(TAG, "Spinner "+mCurrentSubredditChoice + " position: "+position);
-
-//                Toast.makeText(getApplicationContext(), mCurrentSubredditChoice, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -449,17 +414,14 @@ public class MainActivity extends AppCompatActivity
         });
 
         spinner.setAdapter(mAdapter);
-
     }
 
     private void placeSubredditCurrent(){
 
-        if (mSpinnerIdx > -1){
+        if (mSpinnerIdx > Spinner.INVALID_POSITION){
             spinner.setSelection(mSpinnerIdx);
-            Log.w(TAG, "First condition:  index issue in Spinner at "+ mSpinnerIdx);
         } else {
-            Log.w(TAG, "Error: index issue in Spinner at "+ mSpinnerIdx);
-            spinner.setSelection(1);
+            spinner.setSelection(1);    // This should not happen, but set to the first item just in case
         }
     }
 
@@ -468,7 +430,6 @@ public class MainActivity extends AppCompatActivity
 
         if (mSpinnerIdx != Spinner.INVALID_POSITION){
             outState.putInt(SPIN_TO_POSITION, mSpinnerIdx);
-            Log.d(TAG, "saving position: " + mSpinnerIdx + " " + mCurrentSubredditChoice);
             outState.putString(BROWSING_SUBNAME, mCurrentSubredditChoice);
         }
         super.onSaveInstanceState(outState);
@@ -480,7 +441,7 @@ public class MainActivity extends AppCompatActivity
      */
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
-        // For now, afford 5 categories that are similar to each other and more unique to the 'reddit'
+        // Afford 5 categories that are default choices on 'reddit' website
         String[] fiveCategories = {"HOT", "NEW", "RISING", "CONTROVERSIAL", "TOP"};
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -493,13 +454,13 @@ public class MainActivity extends AppCompatActivity
             // Return a MainPagerFragment instance for each category - important: category names
             // are part of main recycler view's parameter when invoking reddit public api.
             String inLowerCase = fiveCategories[position].toLowerCase();
-            Log.d("SectionsPagerAdapter", mCurrentSubredditChoice);
+
             return MainPagerFragment.newInstance(position + 1, inLowerCase, mCurrentSubredditChoice);
         }
 
         @Override
         public int getCount() {
-            // This matches the available tabs
+            // This matches the available number tabs
             return fiveCategories.length;
         }
 
@@ -543,9 +504,8 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     ma_timelineView.setText(Long.toString(post.createdUtcTime));
                 }
-
-                ma_authorView.setText("by " + post.author);
-                ma_numberOfCommentsView.setText(String.valueOf(post.numComments) + " Comments/Threads");
+                ma_authorView.setText(String.format(srBy, post.author));
+                ma_numberOfCommentsView.setText(String.format(srNumComments, post.numComments));
             }
 
         } else {
@@ -570,17 +530,16 @@ public class MainActivity extends AppCompatActivity
         public void onReceive(Context context, Intent intent) {
             FenceState fenceState = FenceState.extract(intent);
 
-            if (TextUtils.equals(fenceState.getFenceKey(), "timeFenceKey")) {
+            if (TextUtils.equals(fenceState.getFenceKey(), FENCE_KEY)) {
                 switch (fenceState.getCurrentState()) {
                     case FenceState.TRUE:
-                        Log.i(TAG, "TimeFence passe " + mPrefTimeFenceMinutes  + " minutes.");
                         Snackbar mSnackbar = Snackbar.make(mCoorLayout,
-                                "TimeFence passe " + mPrefTimeFenceMinutes  + " minites.", Snackbar.LENGTH_LONG);
+                                "TimeFence past " + mPrefTimeFenceMinutes  + " minutes.", Snackbar.LENGTH_LONG);
                         mSnackbar.setAction("OK",
                                 new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        unregisterFence("timeFenceKey");
+                                        unregisterFence(FENCE_KEY);
                                     }
                                 });
                         mSnackbar.show();
@@ -594,7 +553,6 @@ public class MainActivity extends AppCompatActivity
                         break;
                 }
             }
-
         }
     }
 
@@ -605,18 +563,16 @@ public class MainActivity extends AppCompatActivity
         final long multiplyForMillis = 60L * 1000L;
 
         mPrefTimeFenceMinutes = DataUtility.getTimeFencingTimePreference(this);
-        if (mPrefTimeFenceMinutes < 999L) {
+        if (mPrefTimeFenceMinutes < FENCE_NEVER) {
             long fenceMillis = mPrefTimeFenceMinutes * multiplyForMillis;
             mTimeFence = TimeFence.inInterval(nowMillis + fenceMillis, Long.MAX_VALUE);
         } else {
-            // 999 is a flag that user set to 'Never' to remind time lapsed
-            Log.i(TAG, "Fence NEVER was preferred. Try unregistering both receiver and the Fence");
             try {
                 unregisterReceiver(myFenceReceiver);      // Error "not registered"
             } catch (Exception allEx){
                 Log.e(TAG, ""+ allEx);  // Catch the exception until I find a way to peek 'registered' state
             }
-            unregisterFence("timeFenceKey");
+            unregisterFence(FENCE_KEY);
         }
     }
 
@@ -655,7 +611,4 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
-
-
-
 }

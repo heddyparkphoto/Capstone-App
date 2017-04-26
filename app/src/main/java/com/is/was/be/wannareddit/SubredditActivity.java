@@ -235,13 +235,19 @@ public class SubredditActivity extends AppCompatActivity
     public class SubViewHolder extends RecyclerView.ViewHolder {
 
         final String VH_TAG = "SubViewHolder";
-        public TextView nameView;
-        public Button rmButton;
+        @BindView(R2.id.sub_name) TextView nameView;
+        @BindView(R2.id.rm_button)  Button rmButton;
 
         public SubViewHolder(View view) {
             super(view);
-            nameView = (TextView) view.findViewById(R.id.sub_name);
-            rmButton = (Button) view.findViewById(R.id.rm_button);
+
+            ButterKnife.bind(this, view);
+            if (rmButton==null){
+                Log.w(VH_TAG, "NULL111");
+            } else {
+                Log.w(VH_TAG, "VIEW Hold seems to work...");
+            }
+
             rmButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

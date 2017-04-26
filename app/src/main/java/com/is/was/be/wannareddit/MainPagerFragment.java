@@ -16,6 +16,10 @@ import com.is.was.be.wannareddit.service.FetchPostAsyncTask;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * Created by hyeryungpark on 4/4/17.
  */
@@ -35,7 +39,9 @@ public class MainPagerFragment extends Fragment {
     private String mCategory;
     private String mSubName;
 
-    private RecyclerView mRecylerView;
+    @BindView (R2.id.recyclerview_post_empty) TextView emptyView;
+    @BindView (R2.id.recyclerview_post) RecyclerView mRecylerView;
+    private Unbinder unbinder;
 
     private PostAdapter mPostAdapter;
 
@@ -60,7 +66,7 @@ public class MainPagerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        TextView emptyView = (TextView) rootView.findViewById(R.id.recyclerview_post_empty);
+        unbinder = ButterKnife.bind(this, rootView);
 
         if (getArguments() != null && getArguments().getString(ARG_CATEGORY)!=null) {
             mCategory = getArguments().getString(ARG_CATEGORY);
@@ -97,7 +103,6 @@ public class MainPagerFragment extends Fragment {
                 },
                 emptyView);
 
-        mRecylerView = (RecyclerView) rootView.findViewById(R.id.recyclerview_post);
         mRecylerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecylerView.setAdapter(mPostAdapter);
 
@@ -140,5 +145,11 @@ public class MainPagerFragment extends Fragment {
          */
         public void OnPostItemClick(MainPost passinPost);
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

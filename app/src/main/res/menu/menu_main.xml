@@ -6,6 +6,7 @@
         android:id="@+id/add"
         android:title="@string/action_add"
         app:showAsAction="always"
+        android:icon="@drawable/ic_add_menu"
         android:contentDescription="@string/a11y_action_add"
         />
 

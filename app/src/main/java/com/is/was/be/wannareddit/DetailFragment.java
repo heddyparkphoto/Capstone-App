@@ -26,6 +26,10 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 import static android.content.Intent.ACTION_VIEW;
 
 /**
@@ -41,18 +45,19 @@ public class DetailFragment extends Fragment {
 
     private final String TAG = DetailFragment.class.getSimpleName();
 
-//    @BindView(R2.id.post_title_text) TextView postTitle;
-//    @BindView(R2.id.post_image) ImageView postImage;
-//    @BindView(R2.id.listview_comments) ListView mListView;
-//    @BindView(R2.id.recyclerview_comments_empty) TextView mEmptyView;
-//    @BindView(R2.id.media_control) ImageButton mediaButton;
+    @BindView(R2.id.post_title_text) TextView postTitle;
+    @BindView(R2.id.post_image) ImageView postImage;
+    @BindView(R2.id.listview_comments) ListView mListView;
+    @BindView(R2.id.recyclerview_comments_empty) TextView mEmptyView;
+    @BindView(R2.id.media_control) ImageButton mediaButton;
+    Unbinder unbinder;
 
-    TextView postTitle;
-    ImageView postImage;
+//    TextView postTitle;
+//    ImageView postImage;
     ScrollView scrollImageContainer;
-    ListView mListView;
-    TextView mEmptyView;
-    ImageButton mediaButton;
+//    ListView mListView;
+//    TextView mEmptyView;
+//    ImageButton mediaButton;
     TextView timelineView;
     TextView authorView;
     TextView numberOfCommentsView;
@@ -90,11 +95,13 @@ public class DetailFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-        postTitle = (TextView) rootView.findViewById(R.id.post_title_text);
-        postImage = (ImageView) rootView.findViewById(R.id.post_image);
-        mListView = (ListView) rootView.findViewById(R.id.listview_comments);
-        mEmptyView= (TextView) rootView.findViewById(R.id.recyclerview_comments_empty);
-        mediaButton= (ImageButton) rootView.findViewById(R.id.media_control);
+        unbinder = ButterKnife.bind(this, rootView);
+
+//        postTitle = (TextView) rootView.findViewById(R.id.post_title_text);
+//        postImage = (ImageView) rootView.findViewById(R.id.post_image);
+//        mListView = (ListView) rootView.findViewById(R.id.listview_comments);
+//        mEmptyView= (TextView) rootView.findViewById(R.id.recyclerview_comments_empty);
+//        mediaButton= (ImageButton) rootView.findViewById(R.id.media_control);
 
         // this view that contains the image to be animated.  It is referred by the DetailActivity.
         if (rootView.findViewById(R.id.scroll_image)!=null) {
@@ -157,6 +164,12 @@ public class DetailFragment extends Fragment {
 //                });
 //            }
 //        }
+
+        if (mediaButton==null){
+            Log.w(TAG, "Bind view problem??");
+        } else {
+            Log.w(TAG, "Bind view - ORKED MAYBE");
+        }
 
         if (savedInstanceState!=null){
             MainPost testpost = savedInstanceState.getParcelable(PARCEL_SAVED_STATE);
@@ -340,5 +353,11 @@ public class DetailFragment extends Fragment {
 
         outState.putParcelable(PARCEL_SAVED_STATE, mFragPost);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

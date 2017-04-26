@@ -52,6 +52,8 @@
     <string name="a11y_remove_confirm">Removed %s successfully</string>
     <string name="a11y_remove_error">%s is your Preferred subreddit.  Change your preference first.</string>
     <string name="a11y_refresh_icon">Refresh widget icon</string>
+    <string name="a11y_by_who">by %s</string>
+    <string name="a11y_num_comments">%d Comments/Threads</string>
 
     <string name="unknown_response">Could not verify the subreddit name, try later.</string>
     <string name="stat_timeline">20 minutes ago</string>
