@@ -8,7 +8,5 @@
     android:textSize="28sp"
     android:textAlignment="textStart"
     android:textColor="@color/colorAccent"
-
     >
-
 </TextView>

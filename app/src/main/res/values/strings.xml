@@ -6,13 +6,12 @@
     <string name="action_refresh">Refresh</string>
     <string name="noPostDataText">There are no post yet</string>
     <string name="post_filler_text">This is a post of your favorite subreddit place holder.  Please wait until we fetch the real one.</string>
-    <string name="title_activity_main2">Main2Activity</string>
     <string name="subreddit_filler_text">AskReddit</string>
     <string name="Remove">Remove</string>
     <string name="noSubredditText">There are no subreddit yet.\n  Add some to start.\n\n\n\n\n</string>
     <string name="noCommentDataText">There are No comments yet</string>
-    <string name="post_title_temp">This place will hold my favorite subreddit\'s post.  When it happens, it will be a great day.</string>
-    <string name="playMedia">Play media</string>
+    <string name="post_title_temp">This place will hold selected subreddit\'s post.  When it happens, it will be a great thing.</string>
+    <string name="playMedia" translatable="false">Play media</string>
     <string name="comment_filler_text">This is a the post\'s comment place holder.  Please wait until we fetch the real ones.</string>
     <string name="noConnectivity">The network is not connected, please check.</string>
 
@@ -22,15 +21,14 @@
     <string name="subreddit_not_found">Subreddit %s was not found on the site, could not add.</string>
 
     <!--Preferences-->
-    <string name="pref_subrdd_screentitle">Favorite Subreddit</string>
-    <string name="default_subreddit">Shutupandtakemymoney</string>
+    <string name="pref_subrdd_screentitle" translatable="false">Favorite Subreddit</string>
+    <string name="default_subreddit" translatable="false">Shutupandtakemymoney</string>
     <string name="pref_subrdd_key" translatable="false">pref_subrdd_key</string>
-    <string name="pref_timefence_screentitle">Remind Me After Time Spent</string>
+    <string name="pref_timefence_screentitle" translatable="false">Remind Me After Time Spent</string>
     <string name="default_timefence" translatable="false">2</string>
     <string name="pref_timefence_key" translatable="false">pref_timefence_key</string>
 
-
-    <string-array name="interpolators" translatable="false">
+    <string-array name="subreddits" translatable="false">
         <item>Shutupandtakemymoney</item>
         <item>askreddit</item>
         <item>todayilearned</item>
@@ -40,7 +38,7 @@
     </string-array>
 
     <!--Widget support-->
-    <string name="a11y_post_widget">I am a wannareddit post</string>
+    <string name="a11y_post_widget" translatable="false">I am a wannareddit post</string>
     <string name="title_widget" translatable="false">Wannareddit</string>
     <string name="default_post_text">WannaReddit post -- find interesting stuff for me on my subreddit and on my tab</string>
 
@@ -53,6 +51,11 @@
     <string name="a11y_remove_srddt">Remove this subreddit</string>
     <string name="a11y_remove_confirm">Removed %s successfully</string>
     <string name="a11y_remove_error">%s is your Preferred subreddit.  Change your preference first.</string>
+    <string name="a11y_refresh_icon">Refresh widget icon</string>
+
     <string name="unknown_response">Could not verify the subreddit name, try later.</string>
+    <string name="stat_timeline">20 minutes ago</string>
+    <string name="stat_commentnum">5 comments</string>
+    <string name="stat_author">wannaauthor</string>
 
 </resources>

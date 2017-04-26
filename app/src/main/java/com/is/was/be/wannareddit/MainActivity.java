@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity
 
     @BindView(R2.id.main_content) CoordinatorLayout mCoorLayout;
     @BindView(R2.id.toolbar) Toolbar toolbar;
-    @BindView(R2.id.interpolator_spinner) Spinner spinner;
+    @BindView(R2.id.subrddt_spinner) Spinner spinner;
     @BindView(R2.id.container) ViewPager mViewPager;   //The {@link ViewPager} that will host the section contents.
 
     /**

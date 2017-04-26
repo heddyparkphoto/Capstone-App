@@ -24,28 +24,24 @@
             app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             app:expandedTitleMarginStart="16dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed" >
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:layout_gravity="top"
-            android:elevation="8dp">
-            <Spinner
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:entries="@array/interpolators"
-                android:id="@+id/interpolator_spinner"
-                android:paddingStart="16dp"
-
-
-                />
-        </android.support.v7.widget.Toolbar>
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                android:theme="@style/AppTheme.NoActionBar"
+                android:layout_gravity="top"
+                android:elevation="8dp">
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/subreddits"
+                    android:id="@+id/subrddt_spinner"
+                    android:paddingStart="8dp"
+                    />
+            </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
-
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
@@ -53,7 +49,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
         <include layout="@layout/list_viewpager"/>
     </FrameLayout>
 

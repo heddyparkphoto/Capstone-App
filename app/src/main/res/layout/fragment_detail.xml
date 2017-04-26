@@ -44,7 +44,6 @@
         android:id="@+id/scroll_image"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-
         >
         <ImageView
             android:id="@+id/post_image"
@@ -55,7 +54,6 @@
             android:scaleType="fitStart"
         />
     </ScrollView>
-
 
     <ListView
         android:id="@+id/listview_comments"
@@ -78,5 +76,4 @@
         android:paddingBottom="28dp"
         android:visibility="invisible"
         />
-
 </LinearLayout>

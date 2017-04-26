@@ -6,6 +6,4 @@
     android:id="@+id/itemInSpinner"
     android:textSize="36sp"
     android:textColor="@color/colorAccentDark"
-
-
     />

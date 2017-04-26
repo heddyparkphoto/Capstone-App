@@ -11,5 +11,4 @@
         android:paddingStart="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingEnd="@dimen/activity_horizontal_margin"
-
         android:text="@string/comment_filler_text"/>

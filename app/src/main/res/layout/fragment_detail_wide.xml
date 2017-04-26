@@ -58,11 +58,7 @@
     <ListView
         android:id="@+id/listview_comments"
         android:layout_width="match_parent"
-
         android:layout_height="wrap_content"
-
-
-
         android:paddingTop="16dp"
         android:paddingEnd="24dp"
         app:paddingStart="24dp"
