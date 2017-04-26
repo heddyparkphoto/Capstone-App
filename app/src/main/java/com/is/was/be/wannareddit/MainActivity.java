@@ -239,8 +239,13 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (id == R.id.refresh) {
-//            Intent intent = new Intent(this, TabsActivity.class);
-//            startActivity(intent);
+
+            if (mSectionsPagerAdapter !=null) {
+                mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+                // Set up the ViewPager with the sections adapter.
+                mViewPager.setAdapter(mSectionsPagerAdapter);
+            }
+
             return true;
         }
 
