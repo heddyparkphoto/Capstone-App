@@ -5,21 +5,22 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingLeft="0dp"
-    android:paddingStart="0dp"
-    android:paddingEnd="0dp"
-    android:paddingRight="0dp"
-    android:paddingTop="6dp"
-    android:focusableInTouchMode="true"
-    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="6dp"
+        android:focusableInTouchMode="true"
+        >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:paddingStart="16dp"
             >
             <ImageView
                 android:id="@+id/post_image"
@@ -36,52 +37,52 @@
                 android:layout_weight="1"
                 android:orientation="vertical"
                 >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:id="@+id/post_title_text"
-                android:text="@string/post_title_temp"
-                android:textSize="24sp"
-                android:paddingStart="8dp"
-                android:textColor="@color/offblack"
-                android:fontFamily="sans-serif-condensed"
-                android:clickable="true"
-                />
-            <ImageButton
-                android:id="@+id/media_control"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="16dp"
-                android:contentDescription="@string/playMedia"
-                android:src="@drawable/ic_play_video"
-                android:background="@drawable/md_transparent"
-                android:visibility="gone"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/post_title_text"
+                    android:text="@string/post_title_temp"
+                    android:textSize="24sp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:textColor="@color/offblack"
+                    android:fontFamily="sans-serif-condensed"
+                    android:clickable="true"
+                    />
+                <ImageButton
+                    android:id="@+id/media_control"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="16dp"
+                    android:contentDescription="@string/playMedia"
+                    android:src="@drawable/ic_play_video"
+                    android:background="@drawable/md_transparent"
+                    android:visibility="gone"/>
            </LinearLayout>
         </LinearLayout>
 
-    <ListView
-        android:id="@+id/listview_comments"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="24dp"
-        app:paddingStart="24dp"
-        />
-    <!-- empty list -->
-    <TextView
-        android:id="@+id/recyclerview_comments_empty"
-        android:text="@string/noCommentDataText"
-        android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:gravity="center_horizontal"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingEnd="@dimen/activity_horizontal_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingStart="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="28dp"
-        android:visibility="invisible"
-        />
-</LinearLayout>
+        <ListView
+            android:id="@+id/listview_comments"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="24dp"
+            app:paddingStart="24dp"
+            />
+        <!-- empty list -->
+        <TextView
+            android:id="@+id/recyclerview_comments_empty"
+            android:text="@string/noCommentDataText"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:gravity="center_horizontal"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingBottom="28dp"
+            android:visibility="invisible"
+            />
+    </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
