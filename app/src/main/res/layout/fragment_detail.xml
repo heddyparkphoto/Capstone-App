@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.v4.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+<LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingLeft="0dp"
     android:paddingStart="0dp"
     android:paddingEnd="0dp"
     android:paddingRight="0dp"
     android:paddingTop="6dp"
+    android:focusableInTouchMode="true"
     >
-    <ScrollView
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/post_title_text"
-            android:text="@string/post_title_temp"
-            android:textSize="24sp"
-            android:padding="16dp"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:textColor="@color/offblack"
-            android:fontFamily="sans-serif-condensed"
-            android:clickable="true"
-        />
-    </ScrollView>
+        android:layout_height="wrap_content"
+        android:id="@+id/post_title_text"
+        android:text="@string/post_title_temp"
+        android:textSize="24sp"
+        android:padding="16dp"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:textColor="@color/offblack"
+        android:fontFamily="sans-serif-condensed"
+        android:clickable="true"
+    />
 
     <ImageButton
         android:id="@+id/media_control"
@@ -40,26 +40,20 @@
         android:background="@drawable/md_transparent"
         android:visibility="gone"/>
 
-    <ScrollView
-        android:id="@+id/scroll_image"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        >
-        <ImageView
-            android:id="@+id/post_image"
-            android:layout_width="400dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:adjustViewBounds="true"
-            android:scaleType="fitStart"
-        />
-    </ScrollView>
+    <ImageView
+        android:id="@+id/post_image"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:adjustViewBounds="true"
+        android:scaleType="fitStart"
+    />
 
     <ListView
         android:id="@+id/listview_comments"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="12dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
         />
     <!-- empty list -->
     <TextView
@@ -76,4 +70,5 @@
         android:paddingBottom="28dp"
         android:visibility="invisible"
         />
-</LinearLayout>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

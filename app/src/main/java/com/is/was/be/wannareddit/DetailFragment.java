@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.is.was.be.wannareddit.data.DataUtility;
@@ -54,20 +55,9 @@ public class DetailFragment extends Fragment {
     @BindString(R2.string.default_subreddit) String defaultSubname;
     @BindString(R2.string.default_postid) String defaultPostname;
 
-
-    //    TextView postTitle;
-//    ImageView postImage;
-    ScrollView scrollImageContainer;
-//    ListView mListView;
-//    TextView mEmptyView;
-//    ImageButton mediaButton;
     TextView timelineView;
     TextView authorView;
     TextView numberOfCommentsView;
-
-    // Animation var
-//    FrameLayout mScrollingFrm;
-//    LinearLayout mOffLayout;
 
     // Params needed for the details api - passed in by DetailActivity or MainActivity if Tablet
     String mSubrdd;
@@ -89,15 +79,6 @@ public class DetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         unbinder = ButterKnife.bind(this, rootView);
-
-        // this view that contains the image to be animated.  It is referred by the DetailActivity.
-        if (rootView.findViewById(R.id.scroll_image)!=null) {
-            scrollImageContainer = (ScrollView) rootView.findViewById(R.id.scroll_image);
-        }
-
-        if (savedInstanceState!=null){
-            MainPost testpost = savedInstanceState.getParcelable(PARCEL_SAVED_STATE);
-        }
 
         Intent intent = getActivity().getIntent();
         if (null != intent && intent.getBundleExtra(DetailFragment.EXTRA_ON_INTENT) != null) {
@@ -141,7 +122,6 @@ public class DetailFragment extends Fragment {
     }
 
     // Default (first screen) of Master/Detail mode supports initial post to be populated with the app default
-
     private void runTwoPaneSupport(String mysubname, String myCategory) {
         // Fetch data using AsyncTask - we'll only get one MainPost in the form of a list
         ArrayList<MainPost> posts = null;
@@ -182,7 +162,6 @@ public class DetailFragment extends Fragment {
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "" + e);
         }
-
     }
 
     @Override
@@ -203,6 +182,8 @@ public class DetailFragment extends Fragment {
                 }
 
                 mListView.setAdapter(mCommentAdapter);
+                setListViewHeightBasedOnChildren(mListView);
+
                 if (mFragPost != null) {
                     postTitle.setText(mFragPost.getPostTitleLarge());
                     if (mFragPost.getUserUrl() != null) {
@@ -217,7 +198,6 @@ public class DetailFragment extends Fragment {
                                 } else {
                                     Log.w(TAG, "No app found to open the site: " + mFragPost.getUserUrl());
                                 }
-
                             }
                         });
                     }
@@ -242,10 +222,6 @@ public class DetailFragment extends Fragment {
                     if (mFragPost.getThumburl() != null && !mFragPost.getThumburl().isEmpty()) {
                         Picasso.with(getActivity()).load(mFragPost.getThumburl()).into(postImage);
                     } else {
-//                     layout for landscape does not have this Scrollview
-                        if (scrollImageContainer != null) {
-                            scrollImageContainer.setVisibility(View.GONE);
-                        }
                         postImage.setVisibility(View.GONE);
                     }
                 }
@@ -272,5 +248,40 @@ public class DetailFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    /*
+        Credit to the chosen answer on:
+        http://stackoverflow.com/questions/9690246/why-does-my-android-activity-always-start-scrolled-to-the-bottom
+        Coded in fragment_detail.xml in the LinearLayout.
+     */
+
+    /* Solution to make the entire Detail fragment to scroll including the ListView
+       Credit to this site's chosen answer and one suggested Fix in the user comments:
+       http://stackoverflow.com/questions/18367522/android-list-view-inside-a-scroll-view
+    */
+    /**** Method for Setting the Height of the ListView dynamically.
+     **** Hack to fix the issue of not showing all the items of the ListView
+     **** when placed inside a ScrollView  ****/
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, Toolbar.LayoutParams.WRAP_CONTENT));
+
+            view.measure(View.MeasureSpec.makeMeasureSpec(desiredWidth, View.MeasureSpec.AT_MOST),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
     }
 }

@@ -1,12 +1,9 @@
 package com.is.was.be.wannareddit;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.is.was.be.wannareddit.data.DataUtility;
@@ -115,30 +112,6 @@ public class DetailActivity extends AppCompatActivity {
 
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "" + e);
-        }
-    }
-
-    /*
-        Instructive Motion applied to the small Image area to show user that image can be scrolled
-     */
-    @Override
-    public void onEnterAnimationComplete() {
-        super.onEnterAnimationComplete();
-
-        DetailFragment myfrag = (DetailFragment) getSupportFragmentManager().findFragmentByTag(FRAG_TAG);
-        if (myfrag!=null){
-            ScrollView myscroll = myfrag.scrollImageContainer;
-            if (myscroll!=null) {
-                final int startScrollPos = getResources().getDimensionPixelSize(
-                        R.dimen.init_scroll_up_distance);
-
-                Animator animator = ObjectAnimator.ofInt(
-                        myscroll,
-                        "scrollY",
-                        startScrollPos)
-                        .setDuration(300);
-                animator.start();
-            }
         }
     }
 }
