@@ -83,8 +83,13 @@ public class DetailActivity extends AppCompatActivity {
             } else {
                 da_timelineView.setText(Long.toString(mMainPost.createdUtcTime));
             }
-            da_authorView.setText(String.format(srBy, mMainPost.author));
-            da_numberOfCommentsView.setText(String.format(srNumComments, mMainPost.numComments));
+
+            if (da_authorView!=null) {
+                da_authorView.setText(String.format(srBy, mMainPost.author));
+            }
+            if (da_numberOfCommentsView!=null) {
+                da_numberOfCommentsView.setText(String.format(srNumComments, mMainPost.numComments));
+            }
         }
     }
 

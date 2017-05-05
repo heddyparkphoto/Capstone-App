@@ -68,21 +68,21 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:id="@+id/timeline"
-                android:text="20 minutes ago"
+                android:text="@string/stat_timeline"
                 />
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:id="@+id/comments_num"
-                android:text="5 comments"
+                android:text="@string/stat_commentnum"
                 />
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:id="@+id/author_by"
-                android:text="wannaauthor"
+                android:text="@string/stat_author"
                 />
         </LinearLayout>
     </FrameLayout>

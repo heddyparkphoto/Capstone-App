@@ -55,10 +55,6 @@ public class DetailFragment extends Fragment {
     @BindString(R2.string.default_subreddit) String defaultSubname;
     @BindString(R2.string.default_postid) String defaultPostname;
 
-    TextView timelineView;
-    TextView authorView;
-    TextView numberOfCommentsView;
-
     // Params needed for the details api - passed in by DetailActivity or MainActivity if Tablet
     String mSubrdd;
     String mPostId;
@@ -152,9 +148,14 @@ public class DetailFragment extends Fragment {
                             }
                         }
 
-                        authorView.setText("by " + mFragPost.author);
-                        numberView.setText(String.valueOf(mFragPost.numComments) + " Comments/Threads");
-                    }                }
+                        if (authorView!=null) {
+                            authorView.setText("by " + mFragPost.author);
+                        }
+                        if (numberView!=null) {
+                            numberView.setText(String.valueOf(mFragPost.numComments) + " Comments/Threads");
+                        }
+                    }
+                }
             } else {
                 Log.e(TAG, "Post for TwoPane didn't return.");
             }

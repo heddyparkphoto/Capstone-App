@@ -118,7 +118,7 @@ public class MainPagerFragment extends Fragment {
         // Fetch data using AsyncTask
         ArrayList<MainPost> posts = null;
         String cat = "hot";     // Default category, overwrite with mCategory passed in
-                                // LATER, WE CAN USE THE USER'S Preference instead.
+
         if (mCategory!=null && !mCategory.isEmpty()){
             cat = mCategory;
         }

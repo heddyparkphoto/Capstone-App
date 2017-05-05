@@ -9,27 +9,10 @@
     <color name="colorAccent">#ff7043</color>
     <color name="colorAccentDark">#c63f17</color>
 
-
-
-
-    <color name="colorPrimaryLight_bad">#b6e3ff</color>
-    <color name="colorPrimary_bad">#82b1ff</color>
-    <color name="colorPrimaryDark_bad">#4d82cb</color>
-
-    <color name="colorAccentLight_bad">#ffffa8</color>
-    <color name="colorAccent_bad">#fff176</color>
-    <color name="colorAccentDark_bad">#cabf45</color>
-
     <color name="white">#ffffff</color>
     <color name="white_muted">#55ffffff</color>
     <color name="black">#000000</color>
     <color name="offblack">#bb000000</color>
 
     <color name="linkcolor">#0000ff</color>
-
-    <color name="wr_100">#C5CAE9</color>
-    <color name="wr_a200">#536DFE</color>
-    <color name="wr_a400">#3D5AFE</color>
-
-
 </resources>

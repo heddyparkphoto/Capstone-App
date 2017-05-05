@@ -10,7 +10,7 @@
     <string name="Remove">Remove</string>
     <string name="noSubredditText">There are no subreddit yet.\n  Add some to start.\n\n\n\n\n</string>
     <string name="noCommentDataText">There are No comments yet</string>
-    <string name="post_title_temp">This place will hold selected subreddit\'s post.  When it happens, it will be a great thing.</string>
+    <string name="post_title_temp">This place will hold selected subreddit\'s post.  In order to view, select a post.</string>
     <string name="playMedia" translatable="false">Play media</string>
     <string name="comment_filler_text">This is a the post\'s comment place holder.  Please wait until we fetch the real ones.</string>
     <string name="noConnectivity">The network is not connected, please check.</string>

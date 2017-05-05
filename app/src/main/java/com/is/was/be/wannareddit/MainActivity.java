@@ -52,8 +52,6 @@ import com.is.was.be.wannareddit.data.ForRedditProvider;
 import com.is.was.be.wannareddit.data.ListColumns;
 import com.is.was.be.wannareddit.service.WannaTaskService;
 
-import java.util.ArrayList;
-
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -106,7 +104,6 @@ public class MainActivity extends AppCompatActivity
     private SimpleCursorAdapter mAdapter;
     private Cursor mCursor;
     public String mCurrentSubredditChoice;
-    private ArrayList<String> mSpinnerList;
     private int mSpinnerIdx = Spinner.INVALID_POSITION;  // if there isn't a position
     private static final String SPIN_TO_POSITION = "SPIN_TO_POSITION";
     private static final String BROWSING_SUBNAME = "BROWSING_SUBNAME";
@@ -300,7 +297,7 @@ public class MainActivity extends AppCompatActivity
         try {
             unregisterReceiver(myFenceReceiver);    // Exception "not registered" in some cases
         } catch (Exception allEx){
-            Log.e(TAG, ""+ allEx);  // Catch the exception for this version - Haven't found a way to peek 'registered' state.
+            // Catch the exception for this version - Haven't found a way to peek 'registered' state.
         }
 
         if (mGoogleApiClient!=null && mGoogleApiClient.isConnected()){
@@ -575,7 +572,7 @@ public class MainActivity extends AppCompatActivity
             try {
                 unregisterReceiver(myFenceReceiver);      // Error "not registered"
             } catch (Exception allEx){
-                Log.e(TAG, ""+ allEx);  // Catch the exception until I find a way to peek 'registered' state
+                // Catch the exception since I could not find a way to peek 'registered' state
             }
             unregisterFence(FENCE_KEY);
         }
