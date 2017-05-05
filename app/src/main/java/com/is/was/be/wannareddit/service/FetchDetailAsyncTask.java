@@ -79,7 +79,7 @@ public class FetchDetailAsyncTask extends AsyncTask <String, Void, ArrayList<Str
     public static ArrayList<String> parseDetailData(JSONArray jo){
         ArrayList<String> returnList = null;
 
-        if (jo.length() != 2){
+        if (jo==null || jo.length() != 2){
             Log.e(TAG, "Unexpected response.  Cannot find details for the post.");
             return null;
         }

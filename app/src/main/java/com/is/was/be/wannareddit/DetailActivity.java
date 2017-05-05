@@ -32,6 +32,7 @@ public class DetailActivity extends AppCompatActivity {
     @BindString(R2.string.a11y_by_who) String srBy;
 
     MainPost mMainPost;
+    private static final String VIEWING_POST ="VIEWING_POST";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +56,12 @@ public class DetailActivity extends AppCompatActivity {
                         Log.w(TAG, "MainPost was null on the Intent parcel");
                     }
                 } else if (intent.getStringExtra(POSTID)!=null){
-                    // Case of: Widget FillInIntent - Request AsyncTask to populate the rest of fields and construct a MainPost
-                    runExtra(intent.getStringExtra(SUBNAME), intent.getStringExtra(POSTID));
+                    if (Util.isOnline(this)) {
+                        // Case of: Widget FillInIntent - Request AsyncTask to populate the rest of fields and construct a MainPost
+                        runExtra(intent.getStringExtra(SUBNAME), intent.getStringExtra(POSTID));
+                    } else {
+                        Log.w(TAG, "Network is not connected.");
+                    }
                 }
             }
 
@@ -69,6 +74,10 @@ public class DetailActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.detailcontainer_fragment, df, FRAG_TAG)
                     .commit();
+        } else {
+            if (mMainPost == null && savedInstanceState.getParcelable(VIEWING_POST)!=null){
+                mMainPost = savedInstanceState.getParcelable(VIEWING_POST);
+            }
         }
 
         if (mMainPost!=null){
@@ -80,6 +89,15 @@ public class DetailActivity extends AppCompatActivity {
             da_authorView.setText(String.format(srBy, mMainPost.author));
             da_numberOfCommentsView.setText(String.format(srNumComments, mMainPost.numComments));
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        if (mMainPost != null){
+            outState.putParcelable(VIEWING_POST, mMainPost);
+        }
+        super.onSaveInstanceState(outState);
     }
 
     private void runExtra(String mysubname, String mypostId) {

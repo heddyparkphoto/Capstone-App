@@ -25,6 +25,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -50,8 +51,11 @@ public class DetailFragment extends Fragment {
     @BindView(R2.id.recyclerview_comments_empty) TextView mEmptyView;
     @BindView(R2.id.media_control) ImageButton mediaButton;
     Unbinder unbinder;
+    @BindString(R2.string.default_subreddit) String defaultSubname;
+    @BindString(R2.string.default_postid) String defaultPostname;
 
-//    TextView postTitle;
+
+    //    TextView postTitle;
 //    ImageView postImage;
     ScrollView scrollImageContainer;
 //    ListView mListView;
@@ -120,7 +124,9 @@ public class DetailFragment extends Fragment {
                         } else {
                             String mySubrdd = lookupinfo[0];
                             String myCat = lookupinfo[1];
-                            runTwoPaneSupport(mySubrdd, myCat);
+                            if (Util.isOnline(getActivity())) {
+                                runTwoPaneSupport(mySubrdd, myCat);
+                            }
                         }
                     }
                 }
@@ -128,8 +134,8 @@ public class DetailFragment extends Fragment {
         }
 
         // Default post that hopefully never needs to be used, but safegaurd the Detail view
-        if (mSubrdd==null ) mSubrdd = "todayilearned";
-        if (mPostId == null) mPostId = "63bx3b";
+        if (mSubrdd==null ) mSubrdd = defaultSubname;
+        if (mPostId==null) mPostId = defaultPostname;
 
         return rootView;
     }
@@ -168,8 +174,7 @@ public class DetailFragment extends Fragment {
 
                         authorView.setText("by " + mFragPost.author);
                         numberView.setText(String.valueOf(mFragPost.numComments) + " Comments/Threads");
-                    }
-                }
+                    }                }
             } else {
                 Log.e(TAG, "Post for TwoPane didn't return.");
             }
@@ -187,60 +192,66 @@ public class DetailFragment extends Fragment {
 
         try {
 
-            comments = ((FetchDetailAsyncTask) new FetchDetailAsyncTask().execute(mSubrdd, mPostId)).get();
+            if (Util.isOnline(getActivity())) {
+                comments = ((FetchDetailAsyncTask) new FetchDetailAsyncTask().execute(mSubrdd, mPostId)).get();
 
-            if (null != comments) {
-                mCommentAdapter = new ArrayAdapter<>(getActivity(), R.layout.one_comment);
-            }
-            for (String c : comments) {
-                mCommentAdapter.add(c);
-            }
-
-            mListView.setAdapter(mCommentAdapter);
-            if (mFragPost != null) {
-                postTitle.setText(mFragPost.getPostTitleLarge());
-                if (mFragPost.getUserUrl() != null) {
-                    postTitle.setTextColor(getResources().getColor(R.color.linkcolor));
-                    postTitle.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Uri userPage = Uri.parse(mFragPost.getUserUrl());
-                            Intent intent = new Intent(ACTION_VIEW, userPage);
-                            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                startActivity(intent);
-                            } else {
-                                Log.w(TAG, "No app found to open the site: " + mFragPost.getUserUrl());
-                            }
-
-                        }
-                    });
-                }
-                if (mFragPost.getMedia() == DataUtility.AVAIL_INT){
-                    mediaButton.setVisibility(View.VISIBLE);
-                    mediaButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Uri userPage = Uri.parse(mFragPost.getUserUrl());
-                            Intent intent = new Intent(ACTION_VIEW, userPage);
-                            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                startActivity(intent);
-                            } else {
-                                Log.w(TAG, "No app found to open the site: " + mFragPost.getUserUrl());
-                            }
-                        }
-                    });
-                } else {
-                    mediaButton.setVisibility(View.GONE);
-                }
-
-                if (mFragPost.getThumburl() != null && !mFragPost.getThumburl().isEmpty()) {
-                    Picasso.with(getActivity()).load(mFragPost.getThumburl()).into(postImage);
-                } else {
-//                     layout for landscape does not have this Scrollview
-                    if (scrollImageContainer!=null) {
-                        scrollImageContainer.setVisibility(View.GONE);
+                if (null != comments) {
+                    mCommentAdapter = new ArrayAdapter<>(getActivity(), R.layout.one_comment);
+                    for (String c : comments) {
+                        mCommentAdapter.add(c);
                     }
-                    postImage.setVisibility(View.GONE);
+                }
+
+                mListView.setAdapter(mCommentAdapter);
+                if (mFragPost != null) {
+                    postTitle.setText(mFragPost.getPostTitleLarge());
+                    if (mFragPost.getUserUrl() != null) {
+                        postTitle.setTextColor(getResources().getColor(R.color.linkcolor));
+                        postTitle.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Uri userPage = Uri.parse(mFragPost.getUserUrl());
+                                Intent intent = new Intent(ACTION_VIEW, userPage);
+                                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                                    startActivity(intent);
+                                } else {
+                                    Log.w(TAG, "No app found to open the site: " + mFragPost.getUserUrl());
+                                }
+
+                            }
+                        });
+                    }
+                    if (mFragPost.getMedia() == DataUtility.AVAIL_INT) {
+                        mediaButton.setVisibility(View.VISIBLE);
+                        mediaButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Uri userPage = Uri.parse(mFragPost.getUserUrl());
+                                Intent intent = new Intent(ACTION_VIEW, userPage);
+                                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                                    startActivity(intent);
+                                } else {
+                                    Log.w(TAG, "No app found to open the site: " + mFragPost.getUserUrl());
+                                }
+                            }
+                        });
+                    } else {
+                        mediaButton.setVisibility(View.GONE);
+                    }
+
+                    if (mFragPost.getThumburl() != null && !mFragPost.getThumburl().isEmpty()) {
+                        Picasso.with(getActivity()).load(mFragPost.getThumburl()).into(postImage);
+                    } else {
+//                     layout for landscape does not have this Scrollview
+                        if (scrollImageContainer != null) {
+                            scrollImageContainer.setVisibility(View.GONE);
+                        }
+                        postImage.setVisibility(View.GONE);
+                    }
+                }
+            } else {
+                if (postTitle!=null) {
+                    postTitle.setText(getString(R.string.noConnectivity));
                 }
             }
         } catch (InterruptedException | ExecutionException e){

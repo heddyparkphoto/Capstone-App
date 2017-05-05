@@ -23,6 +23,7 @@
     <!--Preferences-->
     <string name="pref_subrdd_screentitle" translatable="false">Favorite Subreddit</string>
     <string name="default_subreddit" translatable="false">todayilearned</string>
+    <string name="default_postid" translatable="false">123456a</string>
     <string name="pref_subrdd_key" translatable="false">pref_subrdd_key</string>
     <string name="pref_timefence_screentitle" translatable="false">Remind Me After Time Spent</string>
     <string name="default_timefence" translatable="false">2</string>

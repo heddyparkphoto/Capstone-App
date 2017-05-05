@@ -119,12 +119,12 @@ public class MainPagerFragment extends Fragment {
         ArrayList<MainPost> posts = null;
         String cat = "hot";     // Default category, overwrite with mCategory passed in
                                 // LATER, WE CAN USE THE USER'S Preference instead.
-        if (mCategory!=null){
+        if (mCategory!=null && !mCategory.isEmpty()){
             cat = mCategory;
         }
 
         String subnm = placeholderSubnm;     // Default subreddit, overwrite when avail
-        if (mSubName!=null){
+        if (mSubName!=null && !mSubName.isEmpty()){
             subnm = mSubName;
         }
 
